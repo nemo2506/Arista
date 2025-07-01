@@ -20,7 +20,8 @@ Arista est une application Android destinée à suivre les données personnelles
 - Profil utilisateur : Enregistrez vos données personnelles.
 - Exercices : Ajoutez vos exercices en cliquant sur le bouton "Ajouter" et en remplissant les informations nécessaires.
 - Sommeil : Ajoutez vos cycles de sommeil en indiquant l'heure de début, la durée et la qualité de votre sommeil.
-- <p align="center">
+
+<p align="center">
   <img src="https://user.oc-static.com/upload/2025/02/18/1739888335313_Capture_d_e%CC%81cran_2025-02-18_a%CC%80_16.17.46-removebg-preview.png" alt="ARISTA logo" width="150"/>
 </p>
 
