@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Arista-kt"
+rootProject.name = "Arista"
 include(":app")
  
