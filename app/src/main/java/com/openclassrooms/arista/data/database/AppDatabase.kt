@@ -7,28 +7,61 @@ import androidx.room.RoomDatabase
 import com.openclassrooms.arista.data.dao.ExerciseDtoDao
 import com.openclassrooms.arista.data.entity.ExerciseDto
 
-@Database(entities = [UserDto::class, SleepDto::class, ExerciseDto::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
- abstract fun userDtoDao(): UserDtoDao
- abstract fun sleepDtoDao(): SleepDtoDao
- abstract fun exerciseDtoDao(): ExerciseDtoDao
+    abstract fun userDtoDao(): UserDtoDao
+    abstract fun sleepDtoDao(): SleepDtoDao
+    abstract fun exerciseDtoDao(): ExerciseDtoDao
 
 
- companion object {
- @Volatile
- private var INSTANCE: AppDatabase? = null
+    private class AppDatabaseCallback(
+        private val scope: CoroutineScope
+    ) : Callback() {
+        override fun onCreate(db: SupportSQLiteDatabase) {
+            super.onCreate(db)
+            INSTANCE?.let { database ->
+                scope.launch {
+                    populateDatabase(database.sleepDtoDao(), database.userDtoDao())
+                }
+            }
+        }
+    }
 
 
- fun getDatabase(context: Context): AppDatabase {
- return INSTANCE ?: synchronized(this) {
- val instance = Room.databaseBuilder(
- context.applicationContext,
- AppDatabase::class.java,
- "app_database"
- ).build()
- INSTANCE = instance
- instance
- }
- }
- }
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+
+        fun getDatabase(context: Context, coroutineScope: CoroutineScope): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "AristaDB"
+                )
+                    .addCallback(AppDatabaseCallback(coroutineScope))
+                    .build()
+                INSTANCE = instance
+                instance
+            }
+        }
+
+
+        suspend fun populateDatabase(sleepDao: SleepDtoDao, userDtoDao: UserDtoDao) {
+
+
+            sleepDao.insertSleep(
+                SleepDto(
+                    startTime = LocalDateTime.now().minusDays(1).atZone(ZoneOffset.UTC).toInstant()
+                        .toEpochMilli(), duration = 480, quality = 4
+                )
+            )
+            sleepDao.insertSleep(
+                SleepDto(
+                    startTime = LocalDateTime.now().minusDays(2).atZone(ZoneOffset.UTC).toInstant()
+                        .toEpochMilli(), duration = 450, quality = 3
+                )
+            )
+        }
+    }
 }
