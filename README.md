@@ -91,9 +91,9 @@ L'application se base sur votre diagramme de classes précédent. Vous devez y i
 
 ---
 
-## ✅ USE CASE
+## 🤖 USE CASE
 <p align="center">
-  <img src="[https://user.oc-static.com/upload/2023/12/06/17018748594551_image3.png](https://miro.medium.com/v2/resize:fit:4800/format:webp/0*5eJUx2N-5IKoIJNO.png)" alt="Tables" width="500"/>
+  <img src="https://miro.medium.com/v2/resize:fit:4800/format:webp/0*5eJUx2N-5IKoIJNO.png" alt="Tables" width="500"/>
 </p>
 
 ---
