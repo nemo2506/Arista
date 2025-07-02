@@ -4,10 +4,16 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "exercise")
+@Entity(
+    tableName = "exercise",
+    foreignKeys = [androidx.room.ForeignKey(
+        entity = UserDto::class,
+        parentColumns = ["id"],
+        childColumns = ["userId"]
+    )]
+)
 data class ExerciseDto(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")
     var id: Long = 0,
 
 
@@ -20,9 +26,17 @@ data class ExerciseDto(
 
 
     @ColumnInfo(name = "category")
-    var category: String,
+    var category: ExerciceCategorie = ExerciceCategorie.Running,
 
 
     @ColumnInfo(name = "intensity")
-    var intensity: Int
+    var intensity: Int,
+
+
+    @ColumnInfo(name = "userId")
+    val userId: Long = 0
 )
+
+enum class ExerciceCategorie {
+    Running, Natation, Football, Marche, Cyclisme
+}

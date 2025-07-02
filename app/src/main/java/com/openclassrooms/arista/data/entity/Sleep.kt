@@ -4,7 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "sleep")
+@Entity(tableName = "sleep",
+    foreignKeys = [androidx.room.ForeignKey(
+        entity = UserDto::class,
+        parentColumns = ["id"],
+        childColumns = ["userId"]
+    )])
 data class SleepDto(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -19,6 +24,10 @@ data class SleepDto(
     var duration: Int,
 
 
-    @ColumnInfo(name = "quantitee")
-    var quality: Int
+    @ColumnInfo(name = "qualite")
+    var quality: Int,
+
+
+    @ColumnInfo(name = "userId")
+    val userId: Long = 0
 )
