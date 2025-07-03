@@ -4,8 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.openclassrooms.arista.data.dao.ExerciseDtoDao
-import com.openclassrooms.arista.data.entity.ExerciseDto
+import com.openclassrooms.arista.data.dao.SleepDtoDao
+import com.openclassrooms.arista.data.dao.UserDtoDao
+import com.openclassrooms.arista.data.entity.SleepDto
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDtoDao(): UserDtoDao

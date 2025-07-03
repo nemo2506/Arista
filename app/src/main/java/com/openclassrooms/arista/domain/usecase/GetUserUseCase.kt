@@ -4,7 +4,7 @@ import com.openclassrooms.arista.data.repository.UserRepository
 import com.openclassrooms.arista.domain.model.User
 import javax.inject.Inject
 
-class GetUserUsecase @Inject constructor(private val userRepository: UserRepository) {
+class GetUserUseCase @Inject constructor(private val userRepository: UserRepository) {
     fun execute(): User {
         return userRepository.user
     }

@@ -8,16 +8,16 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ExerciseDtoDao {
- @Insert
- suspend fun insertExercise(exercise: ExerciseDto): Long
+    @Insert
+    suspend fun insertExercise(exercise: ExerciseDto): Long
 
 
- @Query("SELECT * FROM exercise")
- fun getAllExercises(): Flow<List<ExerciseDto>>
+    @Query("SELECT * FROM exercise")
+    fun getAllExercises(): Flow<List<ExerciseDto>>
 
 
- @Query("DELETE FROM exercise WHERE id = :id")
- suspend fun deleteExerciseById(id: Long)
+    @Query("DELETE FROM exercise WHERE id = :id")
+    suspend fun deleteExerciseById(id: Long)
 
 
 }
