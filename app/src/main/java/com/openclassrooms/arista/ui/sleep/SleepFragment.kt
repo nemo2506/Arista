@@ -30,7 +30,7 @@ class SleepFragment : Fragment() {
         return binding.root
     }
 
-    override suspend fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
         binding.sleepRecyclerview.layoutManager = LinearLayoutManager(context)

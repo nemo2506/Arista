@@ -1,11 +1,12 @@
 package com.openclassrooms.arista.domain.model
 
 import com.openclassrooms.arista.data.entity.SleepDto
+import java.time.LocalDateTime
 
 data class Sleep(
     @JvmField
     var id: Long,
-    var startTime: Long,
+    var startTime: LocalDateTime,
     var duration: Int,
     var quality: Int
 ) {
