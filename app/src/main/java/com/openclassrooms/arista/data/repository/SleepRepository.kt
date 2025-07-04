@@ -8,23 +8,31 @@ class SleepRepository(private val sleepDao: SleepDtoDao) {
 
     // Get all sleeps
     suspend fun getAllSleeps(): List<Sleep> {
-        return sleepDao.getAllSleep()
-            .first() // Collect the first emission of the Flow
-            .map { Sleep.fromDto(it) } // Convert every DTO in Sleep
+        return try {
+            sleepDao.getAllSleep()
+                .first()
+                .map { Sleep.fromDto(it) }
+        } catch (e: Exception) {
+            throw SleepRepositoryException("Failed to fetch sleeps", e)
+        }
     }
 
     // Add a new sleep
     suspend fun addSleep(sleep: Sleep) {
-        sleepDao.insertSleep(sleep.toDto())
+        try {
+            sleepDao.insertSleep(sleep.toDto())
+        } catch (e: Exception) {
+            throw SleepRepositoryException("Failed to add sleep", e)
+        }
     }
 
-    // Delete an sleep
+    // Delete a sleep
     suspend fun deleteSleep(sleep: Sleep) {
-        // If there is no id, you can raise an exception and catch it in the use case and viewmodel
-        sleep.id?.let {
-            sleepDao.deleteSleepById(
-                id = sleep.id,
-            )
+        try {
+            val id = sleep.id ?: throw MissingSleepIdException()
+            sleepDao.deleteSleepById(id)
+        } catch (e: Exception) {
+            throw SleepRepositoryException("Failed to delete sleep", e)
         }
     }
 }

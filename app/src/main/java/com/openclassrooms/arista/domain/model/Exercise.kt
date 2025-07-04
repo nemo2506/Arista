@@ -1,14 +1,16 @@
 package com.openclassrooms.arista.domain.model
 
-import com.openclassrooms.arista.data.entity.ExerciceCategorie
+import com.openclassrooms.arista.domain.model.ExerciseCategory
 import com.openclassrooms.arista.data.entity.ExerciseDto
+import java.time.LocalDateTime
 
 data class Exercise(
     val id: Long? = null,
-    var startTime: Long,
+    var startTime: LocalDateTime,
     var duration: Int,
-    var category: ExerciceCategorie,
-    var intensity: Int
+    var category: ExerciseCategory,
+    var intensity: Int,
+    var userId: Long
 ) {
     companion object {
         fun fromDto(dto: ExerciseDto): Exercise {
@@ -18,6 +20,7 @@ data class Exercise(
                 duration = dto.duration,
                 category = dto.category,
                 intensity = dto.intensity,
+                userId = dto.userId
             )
         }
     }
@@ -28,7 +31,8 @@ data class Exercise(
             startTime = this.startTime,
             duration = this.duration,
             category = this.category,
-            intensity = this.intensity
+            intensity = this.intensity,
+            userId = this.userId
         )
     }
 }

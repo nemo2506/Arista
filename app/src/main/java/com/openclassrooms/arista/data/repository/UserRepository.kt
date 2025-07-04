@@ -8,23 +8,31 @@ class UserRepository(private val userDao: UserDtoDao) {
 
     // Get all users
     suspend fun getAllUsers(): List<User> {
-        return userDao.getAllUser()
-            .first() // Collect the first emission of the Flow
-            .map { User.fromDto(it) } // Convert every DTO in User
+        try {
+            return userDao.getAllUser()
+                .first()
+                .map { User.fromDto(it) }
+        } catch (e: Exception) {
+            throw UserRepositoryException("Failed to fetch users", e)
+        }
     }
 
     // Add a new user
     suspend fun addUser(user: User) {
-        userDao.insertUser(user.toDto())
+        try {
+            userDao.insertUser(user.toDto())
+        } catch (e: Exception) {
+            throw UserRepositoryException("Failed to add user", e)
+        }
     }
 
-    // Delete an user
+    // Delete a user
     suspend fun deleteUser(user: User) {
-        // If there is no id, you can raise an exception and catch it in the use case and viewmodel
-        user.id?.let {
-            userDao.deleteUserById(
-                id = user.id,
-            )
+        try {
+            val id = user.id ?: throw MissingUserIdException()
+            userDao.deleteUserById(id)
+        } catch (e: Exception) {
+            throw UserRepositoryException("Failed to delete user", e)
         }
     }
 }

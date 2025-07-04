@@ -3,6 +3,8 @@ package com.openclassrooms.arista.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.openclassrooms.arista.domain.model.ExerciseCategory
+import java.time.LocalDateTime
 
 @Entity(
     tableName = "exercise",
@@ -18,7 +20,7 @@ data class ExerciseDto(
 
 
     @ColumnInfo(name = "start_time")
-    var startTime: Long,
+    var startTime: LocalDateTime,
 
 
     @ColumnInfo(name = "duration")
@@ -26,7 +28,7 @@ data class ExerciseDto(
 
 
     @ColumnInfo(name = "category")
-    var category: ExerciceCategorie = ExerciceCategorie.Running,
+    var category: ExerciseCategory = ExerciseCategory.Running,
 
 
     @ColumnInfo(name = "intensity")
@@ -36,7 +38,3 @@ data class ExerciseDto(
     @ColumnInfo(name = "userId")
     val userId: Long = 0
 )
-
-enum class ExerciceCategorie {
-    Running, Natation, Football, Marche, Cyclisme
-}

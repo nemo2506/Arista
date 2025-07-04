@@ -18,6 +18,4 @@ interface ExerciseDtoDao {
 
     @Query("DELETE FROM exercise WHERE id = :id")
     suspend fun deleteExerciseById(id: Long)
-
-
 }

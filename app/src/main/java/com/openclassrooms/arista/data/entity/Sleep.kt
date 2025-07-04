@@ -3,6 +3,7 @@ package com.openclassrooms.arista.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.LocalDateTime
 
 @Entity(tableName = "sleep",
     foreignKeys = [androidx.room.ForeignKey(
@@ -17,7 +18,7 @@ data class SleepDto(
 
 
     @ColumnInfo(name = "debut")
-    var startTime: Long,
+    var startTime: LocalDateTime,
 
 
     @ColumnInfo(name = "duree")
