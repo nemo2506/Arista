@@ -1,5 +1,6 @@
 package com.openclassrooms.arista.ui.sleep
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ class SleepAdapter(private var sleeps: List<Sleep>) :
         return SleepViewHolder(itemView)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: SleepViewHolder, position: Int) {
         val sleep = sleeps[position]
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
@@ -29,15 +31,9 @@ class SleepAdapter(private var sleeps: List<Sleep>) :
     override fun getItemCount() = sleeps.size
 
     inner class SleepViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var tvStartTime: TextView
-        var tvDuration: TextView
-        var tvQuality: TextView
-
-        init {
-            tvStartTime = itemView.findViewById(R.id.tv_start_time)
-            tvDuration = itemView.findViewById(R.id.tv_duration)
-            tvQuality = itemView.findViewById(R.id.tv_quality)
-        }
+        var tvStartTime: TextView = itemView.findViewById(R.id.tv_start_time)
+        var tvDuration: TextView = itemView.findViewById(R.id.tv_duration)
+        var tvQuality: TextView = itemView.findViewById(R.id.tv_quality)
     }
 
     fun updateData(newSleeps: List<Sleep>) {

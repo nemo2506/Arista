@@ -1,5 +1,6 @@
 package com.openclassrooms.arista.ui.exercise
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,12 +24,13 @@ class ExerciseAdapter(private val context: DeleteExerciseInterface) :
         return ExerciseViewHolder(itemView)
     }
 
+    @SuppressLint("SetTextI18n", "DefaultLocale")
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         val exercise = getItem(position)
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
         holder.tvStartTime.text =
             String.format("Start Time: %s", exercise!!.startTime.format(formatter))
-        holder.tvDuration.text = String.format("Duration: %d minutes", exercise.duration)
+        holder.tvDuration.text = "Start Time: ${exercise.startTime.format(formatter)}"
         holder.tvCategory.text = String.format("Category: %s", exercise.category.toString())
         holder.tvIntensity.text = String.format("Intensity: %d", exercise.intensity)
         holder.ivDelete.setOnClickListener { _: View? -> context.deleteExercise(exercise) }

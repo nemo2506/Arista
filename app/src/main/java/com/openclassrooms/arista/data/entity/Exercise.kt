@@ -19,19 +19,19 @@ data class ExerciseDto(
     var id: Long = 0,
 
 
-    @ColumnInfo(name = "start_time")
+    @ColumnInfo(name = "debut")
     var startTime: LocalDateTime,
 
 
-    @ColumnInfo(name = "duration")
+    @ColumnInfo(name = "duree")
     var duration: Int,
 
 
-    @ColumnInfo(name = "category")
+    @ColumnInfo(name = "categorie")
     var category: ExerciseCategory = ExerciseCategory.Running,
 
 
-    @ColumnInfo(name = "intensity")
+    @ColumnInfo(name = "intensite")
     var intensity: Int,
 
 

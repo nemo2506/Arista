@@ -11,10 +11,8 @@ interface SleepDtoDao {
     @Insert
     suspend fun insertSleep(sleep: SleepDto): Long
 
-
-    @Query("SELECT * FROM sleep")
+    @Query("SELECT * FROM sleep ORDER BY debut ASC")
     fun getAllSleep(): Flow<List<SleepDto>>
-
 
     @Query("DELETE FROM sleep WHERE id = :id")
     suspend fun deleteSleepById(id: Long)

@@ -24,17 +24,17 @@ class ExerciseViewModel @Inject constructor(
         loadAllExercises()
     }
 
-    fun deleteExercise(exercise: Exercise) {
+    suspend fun deleteExercise(exercise: Exercise) {
         deleteExerciseUseCase.execute(exercise)
         loadAllExercises()
     }
 
-    private fun loadAllExercises() {
+    private suspend fun loadAllExercises() {
         val exercises = getAllExercisesUseCase.execute()
         _exercisesFlow.value = exercises
     }
 
-    fun addNewExercise(exercise: Exercise) {
+    suspend fun addNewExercise(exercise: Exercise) {
         addNewExerciseUseCase.execute(exercise)
         loadAllExercises()
     }

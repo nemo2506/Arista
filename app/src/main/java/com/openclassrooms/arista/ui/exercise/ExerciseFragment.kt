@@ -86,7 +86,8 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
             adapter = ArrayAdapter(
                 requireContext(),
                 android.R.layout.simple_spinner_item,
-                ExerciseCategory.values()
+                ExerciseCategory.entries.toTypedArray()
+//                ExerciseCategory.values()
             ).apply {
                 setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             }
@@ -95,7 +96,7 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
         return Triple(durationEditText, categorySpinner, intensityEditText)
     }
 
-    private fun addExercise(views: Triple<EditText, Spinner, EditText>) {
+    private suspend fun addExercise(views: Triple<EditText, Spinner, EditText>) {
         val (durationEditText, categorySpinner, intensityEditText) = views
 
         val durationStr = durationEditText.text.toString().trim()

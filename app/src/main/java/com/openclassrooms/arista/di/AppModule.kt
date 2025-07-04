@@ -22,11 +22,9 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
-
     @Provides
     @Singleton
     fun provideCoroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-
 
     @Provides
     @Singleton

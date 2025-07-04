@@ -17,7 +17,7 @@ class SleepViewModel @Inject constructor(private val getAllSleepsUseCase: GetAll
     private val _sleeps = MutableStateFlow<List<Sleep>>(emptyList())
     val sleeps: StateFlow<List<Sleep>> = _sleeps.asStateFlow()
 
-    fun fetchSleeps() {
+    suspend fun fetchSleeps() {
         val sleepList = getAllSleepsUseCase.execute()
         _sleeps.value = sleepList
     }

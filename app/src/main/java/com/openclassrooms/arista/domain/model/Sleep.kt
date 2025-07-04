@@ -1,15 +1,13 @@
 package com.openclassrooms.arista.domain.model
 
 import com.openclassrooms.arista.data.entity.SleepDto
-import java.time.LocalDateTime
 
 data class Sleep(
     @JvmField
     var id: Long,
-    var startTime: LocalDateTime,
+    var startTime: Long,
     var duration: Int,
-    var quality: Int,
-    var userId: Long
+    var quality: Int
 ) {
     companion object {
         fun fromDto(dto: SleepDto): Sleep {
@@ -17,8 +15,7 @@ data class Sleep(
                 id = dto.id,
                 startTime = dto.startTime,
                 duration = dto.duration,
-                quality = dto.quality,
-                userId = dto.userId
+                quality = dto.quality
             )
         }
     }
@@ -28,8 +25,7 @@ data class Sleep(
             id = this.id,
             startTime = this.startTime,
             duration = this.duration,
-            quality = this.quality,
-            userId = this.userId
+            quality = this.quality
         )
     }
 }

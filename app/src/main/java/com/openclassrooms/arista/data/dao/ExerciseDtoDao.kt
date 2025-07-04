@@ -11,10 +11,8 @@ interface ExerciseDtoDao {
     @Insert
     suspend fun insertExercise(exercise: ExerciseDto): Long
 
-
-    @Query("SELECT * FROM exercise")
+    @Query("SELECT * FROM exercise ORDER BY debut ASC")
     fun getAllExercises(): Flow<List<ExerciseDto>>
-
 
     @Query("DELETE FROM exercise WHERE id = :id")
     suspend fun deleteExerciseById(id: Long)

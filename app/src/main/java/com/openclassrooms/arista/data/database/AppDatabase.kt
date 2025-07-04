@@ -1,7 +1,6 @@
 package com.openclassrooms.arista.data.database
 
 import android.content.Context
-import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -53,9 +52,7 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-
         suspend fun populateDatabase(sleepDao: SleepDtoDao, userDtoDao: UserDtoDao) {
-
 
             sleepDao.insertSleep(
                 SleepDto(
