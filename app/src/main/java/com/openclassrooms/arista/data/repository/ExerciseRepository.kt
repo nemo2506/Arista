@@ -3,8 +3,6 @@ package com.openclassrooms.arista.data.repository
 import com.openclassrooms.arista.data.dao.ExerciseDtoDao
 import com.openclassrooms.arista.domain.model.Exercise
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-
 
 class ExerciseRepository(private val exerciseDao: ExerciseDtoDao) {
 
