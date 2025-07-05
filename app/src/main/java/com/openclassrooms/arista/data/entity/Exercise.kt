@@ -18,22 +18,17 @@ data class ExerciseDto(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")
     var id: Long = 0,
 
-
     @ColumnInfo(name = "debut")
     var startTime: LocalDateTime,
-
 
     @ColumnInfo(name = "duree")
     var duration: Int,
 
-
     @ColumnInfo(name = "categorie")
     var category: ExerciseCategory = ExerciseCategory.Running,
 
-
     @ColumnInfo(name = "intensite")
     var intensity: Int,
-
 
     @ColumnInfo(name = "userId")
     val userId: Long = 0

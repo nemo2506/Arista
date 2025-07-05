@@ -8,7 +8,8 @@ data class Sleep(
     var id: Long,
     var startTime: LocalDateTime,
     var duration: Int,
-    var quality: Int
+    var quality: Int,
+    var userId: Long
 ) {
     companion object {
         fun fromDto(dto: SleepDto): Sleep {
@@ -16,7 +17,8 @@ data class Sleep(
                 id = dto.id,
                 startTime = dto.startTime,
                 duration = dto.duration,
-                quality = dto.quality
+                quality = dto.quality,
+                userId = dto.userId
             )
         }
     }
@@ -26,7 +28,8 @@ data class Sleep(
             id = this.id,
             startTime = this.startTime,
             duration = this.duration,
-            quality = this.quality
+            quality = this.quality,
+            userId = this.userId
         )
     }
 }

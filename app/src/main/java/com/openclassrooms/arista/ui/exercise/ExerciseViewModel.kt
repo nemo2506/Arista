@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ExerciseViewModel @Inject constructor(
@@ -21,7 +23,9 @@ class ExerciseViewModel @Inject constructor(
     val exercisesFlow: StateFlow<List<Exercise>> = _exercisesFlow.asStateFlow()
 
     init {
-        loadAllExercises()
+        viewModelScope.launch {
+            loadAllExercises()
+        }
     }
 
     suspend fun deleteExercise(exercise: Exercise) {

@@ -74,7 +74,11 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
             AlertDialog.Builder(requireContext())
                 .setView(dialogView)
                 .setTitle(R.string.add_new_exercise)
-                .setPositiveButton(R.string.add) { _, _ -> addExercise(it) }
+                .setPositiveButton(R.string.add) { _, _ ->
+                    lifecycleScope.launch {
+                        addExercise(it)
+                    }
+                }
                 .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
                 .show()
         }
@@ -112,7 +116,10 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
         val category = categorySpinner.selectedItem as ExerciseCategory
 
         val newExercise =
-            Exercise(System.currentTimeMillis(), LocalDateTime.now(), duration, category, intensity)
+            Exercise(
+                System.currentTimeMillis(), LocalDateTime.now(), duration, category, intensity,
+                userId = 1
+            )
         viewModel.addNewExercise(newExercise)
     }
 
@@ -159,6 +166,10 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
     }
 
     override fun deleteExercise(exercise: Exercise?) {
-        exercise?.let { viewModel.deleteExercise(it) }
+        exercise?.let {
+            lifecycleScope.launch {
+                viewModel.deleteExercise(it)
+            }
+        }
     }
 }

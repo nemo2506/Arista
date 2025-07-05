@@ -35,7 +35,9 @@ class SleepFragment : Fragment() {
         setupObservers()
         binding.sleepRecyclerview.layoutManager = LinearLayoutManager(context)
         binding.sleepRecyclerview.adapter = sleepAdapter
-        viewModel.fetchSleeps()
+        lifecycleScope.launch {
+            viewModel.fetchSleeps()
+        }
     }
 
     private fun setupObservers() {

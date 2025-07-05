@@ -9,7 +9,8 @@ data class Exercise(
     var startTime: LocalDateTime,
     var duration: Int,
     var category: ExerciseCategory,
-    var intensity: Int
+    var intensity: Int,
+    var userId: Long
 ) {
     companion object {
         fun fromDto(dto: ExerciseDto): Exercise {
@@ -18,7 +19,8 @@ data class Exercise(
                 startTime = dto.startTime,
                 duration = dto.duration,
                 category = dto.category,
-                intensity = dto.intensity
+                intensity = dto.intensity,
+                userId = dto.userId
             )
         }
     }
@@ -29,7 +31,8 @@ data class Exercise(
             startTime = this.startTime,
             duration = this.duration,
             category = this.category,
-            intensity = this.intensity
+            intensity = this.intensity,
+            userId = this.userId
         )
     }
 }

@@ -1,18 +1,25 @@
 package com.openclassrooms.arista.data.database
 
 import android.content.Context
+import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.openclassrooms.arista.data.converter.Converters
 import com.openclassrooms.arista.data.dao.ExerciseDtoDao
 import com.openclassrooms.arista.data.dao.SleepDtoDao
 import com.openclassrooms.arista.data.dao.UserDtoDao
+import com.openclassrooms.arista.data.entity.ExerciseDto
 import com.openclassrooms.arista.data.entity.SleepDto
+import com.openclassrooms.arista.data.entity.UserDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
+@Database(entities = [UserDto::class, SleepDto::class, ExerciseDto::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDtoDao(): UserDtoDao
     abstract fun sleepDtoDao(): SleepDtoDao
@@ -56,14 +63,26 @@ abstract class AppDatabase : RoomDatabase() {
 
             sleepDao.insertSleep(
                 SleepDto(
-                    startTime = LocalDateTime.now().minusDays(1).atZone(ZoneOffset.UTC).toInstant()
-                        .toEpochMilli(), duration = 480, quality = 4
+                    startTime = LocalDateTime.now(),
+                    duration = 480,
+                    quality = 4,
+                    userId = 1
                 )
             )
             sleepDao.insertSleep(
                 SleepDto(
-                    startTime = LocalDateTime.now().minusDays(2).atZone(ZoneOffset.UTC).toInstant()
-                        .toEpochMilli(), duration = 450, quality = 3
+                    startTime = LocalDateTime.now(),
+                    duration = 450,
+                    quality = 3,
+                    userId = 1
+                )
+            )
+
+            userDtoDao.insertUser(
+                UserDto(
+                    name = "Joe",
+                    email = "joe@example.com",
+                    password = "LongPassword"
                 )
             )
         }

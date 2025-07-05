@@ -79,4 +79,10 @@ dependencies {
     //ajout de hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    implementation(libs.arch.core.common)
+    implementation(libs.arch.core.runtime)
+    testImplementation(libs.arch.core.testing)
+
+    testImplementation(libs.mockito.kotlin)
 }
