@@ -18,13 +18,16 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-@Database(entities = [UserDto::class, SleepDto::class, ExerciseDto::class], version = 1, exportSchema = false)
+@Database(
+    entities = [UserDto::class, SleepDto::class, ExerciseDto::class],
+    version = 1,
+    exportSchema = true
+)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDtoDao(): UserDtoDao
     abstract fun sleepDtoDao(): SleepDtoDao
     abstract fun exerciseDtoDao(): ExerciseDtoDao
-
 
     private class AppDatabaseCallback(
         private val scope: CoroutineScope
@@ -61,6 +64,14 @@ abstract class AppDatabase : RoomDatabase() {
 
         suspend fun populateDatabase(sleepDao: SleepDtoDao, userDtoDao: UserDtoDao) {
 
+            userDtoDao.insertUser(
+                UserDto(
+                    name = "Joe",
+                    email = "joe@example.com",
+                    password = "LongPassword"
+                )
+            )
+
             sleepDao.insertSleep(
                 SleepDto(
                     startTime = LocalDateTime.now(),
@@ -69,20 +80,13 @@ abstract class AppDatabase : RoomDatabase() {
                     userId = 1
                 )
             )
+
             sleepDao.insertSleep(
                 SleepDto(
                     startTime = LocalDateTime.now(),
                     duration = 450,
                     quality = 3,
                     userId = 1
-                )
-            )
-
-            userDtoDao.insertUser(
-                UserDto(
-                    name = "Joe",
-                    email = "joe@example.com",
-                    password = "LongPassword"
                 )
             )
         }

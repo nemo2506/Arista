@@ -3,6 +3,7 @@ package com.openclassrooms.arista.data.repository
 import com.openclassrooms.arista.data.dao.UserDtoDao
 import com.openclassrooms.arista.domain.model.User
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 
 class UserRepository(private val userDao: UserDtoDao) {
 
@@ -13,6 +14,10 @@ class UserRepository(private val userDao: UserDtoDao) {
                 .first()
                 .map { User.fromDto(it) }
         } catch (e: Exception) {
+//            return listOf(User(
+//                id = 1, name = "fakeUser".toString(), password = "fakePassword".toString(),
+//                email = "fakeEmail".toString()
+//            ))
             throw UserRepositoryException("Failed to fetch users", e)
         }
     }

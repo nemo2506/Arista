@@ -16,13 +16,13 @@ data class SleepDto(
     @ColumnInfo(name = "id")
     var id: Long = 0,
 
-    @ColumnInfo(name = "debut")
+    @ColumnInfo(name = "startTime")
     var startTime: LocalDateTime,
 
-    @ColumnInfo(name = "duree")
+    @ColumnInfo(name = "duration")
     var duration: Int,
 
-    @ColumnInfo(name = "qualitee")
+    @ColumnInfo(name = "quality")
     var quality: Int,
 
     @ColumnInfo(name = "userId")

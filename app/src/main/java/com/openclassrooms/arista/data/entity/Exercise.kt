@@ -15,19 +15,20 @@ import java.time.LocalDateTime
     )]
 )
 data class ExerciseDto(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     var id: Long = 0,
 
-    @ColumnInfo(name = "debut")
+    @ColumnInfo(name = "startTime")
     var startTime: LocalDateTime,
 
-    @ColumnInfo(name = "duree")
+    @ColumnInfo(name = "duration")
     var duration: Int,
 
-    @ColumnInfo(name = "categorie")
+    @ColumnInfo(name = "category")
     var category: ExerciseCategory = ExerciseCategory.Running,
 
-    @ColumnInfo(name = "intensite")
+    @ColumnInfo(name = "intensity")
     var intensity: Int,
 
     @ColumnInfo(name = "userId")

@@ -10,12 +10,12 @@ data class UserDto(
     @ColumnInfo(name = "id")
     var id: Long = 0,
 
-    @ColumnInfo(name = "nom")
+    @ColumnInfo(name = "name")
     var name: String,
 
     @ColumnInfo(name = "email")
     var email: String,
 
-    @ColumnInfo(name = "motDePasse")
+    @ColumnInfo(name = "password")
     var password: String
 )
