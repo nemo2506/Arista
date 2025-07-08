@@ -25,8 +25,7 @@ class UserDataViewModel @Inject constructor(private val getUserUseCase: GetUserU
     private fun loadUserData() {
         viewModelScope.launch {
             val user = getUserUseCase.execute()
-            Log.d("MARC", "loadUserData: $user")
-            _userFlow.value = user.firstOrNull()
+            _userFlow.value = user
         }
     }
 }
