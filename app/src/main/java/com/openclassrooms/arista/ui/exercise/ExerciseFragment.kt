@@ -20,7 +20,6 @@ import com.openclassrooms.arista.domain.model.ExerciseCategory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.time.ZoneId
 
 interface DeleteExerciseInterface {
     fun deleteExercise(exercise: Exercise?)
@@ -92,7 +91,6 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
                 requireContext(),
                 android.R.layout.simple_spinner_item,
                 ExerciseCategory.entries.toTypedArray()
-//                ExerciseCategory.values()
             ).apply {
                 setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             }

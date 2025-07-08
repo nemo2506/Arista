@@ -2,7 +2,6 @@ package com.openclassrooms.arista.domain.usecase
 
 import com.openclassrooms.arista.data.repository.MissingUserIdException
 import com.openclassrooms.arista.data.repository.SleepRepository
-import com.openclassrooms.arista.data.repository.UserRepository
 import com.openclassrooms.arista.domain.model.Sleep
 import javax.inject.Inject
 
