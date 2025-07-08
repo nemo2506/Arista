@@ -38,7 +38,7 @@ class ExerciseViewModel @Inject constructor(
         _exercisesFlow.value = exercises
     }
 
-    suspend fun addNewExercise(exercise: Exercise) {
+    suspend fun add(exercise: List<Any>) {
         addNewExerciseUseCase.execute(exercise)
         loadAllExercises()
     }
