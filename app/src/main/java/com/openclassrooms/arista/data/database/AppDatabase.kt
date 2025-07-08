@@ -16,7 +16,6 @@ import com.openclassrooms.arista.data.entity.UserDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 @Database(
     entities = [UserDto::class, SleepDto::class, ExerciseDto::class],
@@ -42,11 +41,9 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 
-
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
-
 
         fun getDatabase(context: Context, coroutineScope: CoroutineScope): AppDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -66,8 +63,8 @@ abstract class AppDatabase : RoomDatabase() {
 
             userDtoDao.insertUser(
                 UserDto(
-                    name = "Joe",
-                    email = "joe@example.com",
+                    name = "John Doe",
+                    email = "johndoe@example.com",
                     password = "LongPassword"
                 )
             )

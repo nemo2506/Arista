@@ -14,10 +14,6 @@ class UserRepository(private val userDao: UserDtoDao) {
                 .first()
                 .map { User.fromDto(it) }
         } catch (e: Exception) {
-//            return listOf(User(
-//                id = 1, name = "fakeUser".toString(), password = "fakePassword".toString(),
-//                email = "fakeEmail".toString()
-//            ))
             throw UserRepositoryException("Failed to fetch users", e)
         }
     }
