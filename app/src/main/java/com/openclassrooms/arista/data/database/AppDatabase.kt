@@ -13,6 +13,7 @@ import com.openclassrooms.arista.data.dao.UserDtoDao
 import com.openclassrooms.arista.data.entity.ExerciseDto
 import com.openclassrooms.arista.data.entity.SleepDto
 import com.openclassrooms.arista.data.entity.UserDto
+import com.openclassrooms.arista.domain.model.ExerciseCategory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -35,7 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
             super.onCreate(db)
             INSTANCE?.let { database ->
                 scope.launch {
-                    populateDatabase(database.sleepDtoDao(), database.userDtoDao())
+                    populateDatabase(database.sleepDtoDao(), database.exerciseDtoDao(), database.userDtoDao())
                 }
             }
         }
@@ -59,13 +60,21 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        suspend fun populateDatabase(sleepDao: SleepDtoDao, userDtoDao: UserDtoDao) {
+        suspend fun populateDatabase(sleepDao: SleepDtoDao, exerciseDtoDao: ExerciseDtoDao, userDtoDao: UserDtoDao) {
 
             userDtoDao.insertUser(
                 UserDto(
                     name = "John Doe",
                     email = "johndoe@example.com",
                     password = "LongPassword"
+                )
+            )
+
+            userDtoDao.insertUser(
+                UserDto(
+                    name = "Joe Second",
+                    email = "joe-backup@example.com",
+                    password = "Just-Password"
                 )
             )
 
@@ -84,6 +93,25 @@ abstract class AppDatabase : RoomDatabase() {
                     duration = 450,
                     quality = 3,
                     userId = 1
+                )
+            )
+
+            sleepDao.insertSleep(
+                SleepDto(
+                    startTime = LocalDateTime.now(),
+                    duration = 960,
+                    quality = 10,
+                    userId = 2
+                )
+            )
+
+            exerciseDtoDao.insertExercise(
+                ExerciseDto(
+                    startTime = LocalDateTime.now(),
+                    duration = 666,
+                    category = ExerciseCategory.Running,
+                    intensity = 3,
+                    userId = 2
                 )
             )
         }

@@ -6,6 +6,7 @@ import javax.inject.Inject
 
 class GetUserUseCase @Inject constructor(private val userRepository: UserRepository) {
     suspend fun execute(): User? {
-        return userRepository.getAllUsers().firstOrNull()
+        val user = userRepository.getAllUsers().firstOrNull()
+        return user
     }
 }
