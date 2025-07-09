@@ -1,6 +1,5 @@
 package com.openclassrooms.arista.data.repository
 
-import android.util.Log
 import com.openclassrooms.arista.data.dao.ExerciseDtoDao
 import com.openclassrooms.arista.domain.model.Exercise
 import kotlinx.coroutines.flow.first

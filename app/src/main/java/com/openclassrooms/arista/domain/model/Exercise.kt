@@ -1,6 +1,5 @@
 package com.openclassrooms.arista.domain.model
 
-import com.openclassrooms.arista.domain.model.ExerciseCategory
 import com.openclassrooms.arista.data.entity.ExerciseDto
 import java.time.LocalDateTime
 

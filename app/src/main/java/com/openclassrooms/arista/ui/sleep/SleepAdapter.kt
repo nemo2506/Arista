@@ -8,8 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.arista.R
 import com.openclassrooms.arista.domain.model.Sleep
-import java.time.Instant
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 class SleepAdapter(private var sleeps: List<Sleep>) :
