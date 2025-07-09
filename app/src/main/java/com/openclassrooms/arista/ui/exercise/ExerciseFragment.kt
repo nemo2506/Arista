@@ -86,8 +86,9 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
      */
     private fun observeExercises() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.exercisesFlow.collect { exercises ->
-                exerciseAdapter.submitList(exercises)
+            viewModel.uiState.collect {
+//                exercises -> exerciseAdapter.submitList(exercises)
+                exerciseAdapter.submitList(it.exercises)
             }
         }
     }
@@ -143,22 +144,22 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
      * Collects user input from dialog views, validates, and adds the new exercise via the ViewModel.
      * @param views The Triple of input views: duration EditText, category Spinner, intensity EditText.
      */
-    private suspend fun addExercise(views: Triple<EditText, Spinner, EditText>) {
+//    private suspend fun addExercise(views: Triple<EditText, Spinner, EditText>) {
+    private fun addExercise(views: Triple<EditText, Spinner, EditText>) {
         val (durationEditText, categorySpinner, intensityEditText) = views
 
         val durationStr = durationEditText.text.toString().trim()
         val intensityStr = intensityEditText.text.toString().trim()
 
-        val isDurationValid = validateDuration(durationStr)
-        val isIntensityValid = validateIntensity(intensityStr)
-
-        if (!isDurationValid || !isIntensityValid) return
+//        val isDurationValid = validateDuration(durationStr)
+//        val isIntensityValid = validateIntensity(intensityStr)
+//
+//        if (!isDurationValid || !isIntensityValid) return
 
         val duration = durationStr.toInt()
         val intensity = intensityStr.toInt()
         val category = categorySpinner.selectedItem as ExerciseCategory
-
-        viewModel.add(listOf(LocalDateTime.now(), duration, category, intensity))
+        viewModel.add(startTime = LocalDateTime.now(),  duration = duration, category = category, intensity = intensity)
     }
 
     /**

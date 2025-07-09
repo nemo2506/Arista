@@ -5,13 +5,17 @@ import com.openclassrooms.arista.domain.model.Exercise
 import com.openclassrooms.arista.domain.usecase.AddNewExerciseUseCase
 import com.openclassrooms.arista.domain.usecase.DeleteExerciseUseCase
 import com.openclassrooms.arista.domain.usecase.GetAllExercisesUseCase
+import com.openclassrooms.arista.domain.usecase.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
+import com.openclassrooms.arista.domain.model.ExerciseCategory
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @HiltViewModel
 class ExerciseViewModel @Inject constructor(
@@ -19,8 +23,9 @@ class ExerciseViewModel @Inject constructor(
     private val addNewExerciseUseCase: AddNewExerciseUseCase,
     private val deleteExerciseUseCase: DeleteExerciseUseCase
 ) : ViewModel() {
-    private val _exercisesFlow = MutableStateFlow<List<Exercise>>(emptyList())
-    val exercisesFlow: StateFlow<List<Exercise>> = _exercisesFlow.asStateFlow()
+    private val _uiState = MutableStateFlow(UiState())
+//    val exercisesFlow: StateFlow<List<Exercise>> = _uiState.asStateFlow()
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -33,13 +38,85 @@ class ExerciseViewModel @Inject constructor(
         loadAllExercises()
     }
 
-    private suspend fun loadAllExercises() {
-        val exercises = getAllExercisesUseCase.execute()
-        _exercisesFlow.value = exercises
+//    private suspend fun loadAllExercises() {
+//        val exercises = getAllExercisesUseCase.execute()
+//        _exercisesFlow.value = exercises
+//    }
+    private fun loadAllExercises() {
+        viewModelScope.launch() {
+            // Attempt to log in and update UI state based on the result
+            when (val update = getAllExercisesUseCase.execute()) {
+
+                // If balance fails, update state with failure message
+                is Result.Failure -> {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            errorMessage = update.message
+                        )
+                    }
+                }
+
+                // If balance is successful, update state with login success
+                is Result.Success -> {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            exercises = update.value.exercises
+                        )
+                    }
+                }
+            }
+        }
     }
 
-    suspend fun add(exercise: List<Any>) {
-        addNewExerciseUseCase.execute(exercise)
-        loadAllExercises()
+    fun add(
+        startTime: LocalDateTime,
+        duration: Int,
+        category: ExerciseCategory,
+        intensity: Int
+    ) {
+        viewModelScope.launch {
+            addNewExerciseUseCase.execute(
+                Exercise(
+                    startTime = startTime,
+                    duration = duration,
+                    category = category,
+                    intensity = intensity,
+                    userId = 1L // hardcoded user ID
+                )
+            )
+            loadAllExercises()
+        }
+    }
+
+    /**
+     * Updates the UI state to reflect whether the user has provided valid data
+     * (non-empty intensity).
+     *
+     * @param intensity Boolean indicating if the identifier is not empty.
+     */
+    fun validateIntensity(intensity: String): Boolean {
+        return intensity.isNotBlank()
+    }
+
+    /**
+     * Updates the UI state to reflect whether the user has provided valid data
+     * (non-empty duration).
+     *
+     * @param duration Boolean indicating if the duration is not empty.
+     */
+    fun validateDuration(duration: String): Boolean {
+        return duration.isNotBlank()
     }
 }
+
+/**
+ * Data class that represents the UI state for the login screen.
+ *
+ * Holds information about whether the user data is ready,
+ * whether the login was successful, if the screen is loading,
+ * and any error messages that may have occurred during login.
+ */
+data class UiState(
+    val exercises: List<Exercise>? = null,
+    val errorMessage: String? = null
+)

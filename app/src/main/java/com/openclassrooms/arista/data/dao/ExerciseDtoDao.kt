@@ -11,7 +11,7 @@ interface ExerciseDtoDao {
     @Insert
     suspend fun insertExercise(exercise: ExerciseDto): Long
 
-    @Query("SELECT * FROM exercise ORDER BY startTime ASC")
+    @Query("SELECT * FROM exercise WHERE userId = 1 ORDER BY startTime ASC") // hardcoded user ID
     fun getAllExercises(): Flow<List<ExerciseDto>>
 
     @Query("DELETE FROM exercise WHERE id = :id")
