@@ -47,6 +47,29 @@ class GetAllSleepsUseCaseTest {
     /** Fixed test date for consistency in tests. */
     private val testDateTime = LocalDateTime.of(2025, 7, 9, 10, 0)
 
+    /** Fixed test user for consistency in tests. */
+    private val testUser = User(
+        id = 1L,
+        name = "Test User",
+        email = "test@example.com",
+        password = "pass"
+    )
+    /** Fixed test sleeps for consistency in tests. */
+    private val sleep1 = Sleep(
+        id = 1L,
+        startTime = testDateTime,
+        duration = 7,
+        quality = 1,
+        userId = 1L
+    )
+    private val sleep2 = Sleep(
+        id = 2L,
+        startTime = testDateTime,
+        duration = 5,
+        quality = 2,
+        userId = 2L
+    )
+
     /**
      * Setup before each test: initialize mocks and use case.
      */
@@ -71,41 +94,60 @@ class GetAllSleepsUseCaseTest {
      * Tests that the use case returns only sleeps belonging to the current user.
      */
     @Test
-    fun quand_usecase_sexecute_devrait_retourner_seulement_les_sleeps_de_lutilisateur_courant() = runBlocking {
-        // Arrange
-        val testUser = User(
-            id = 1L,
-            name = "Test User",
-            email = "test@example.com",
-            password = "pass"
-        )
-        val sleep1 = Sleep(
-            id = 1L,
-            startTime = testDateTime,
-            duration = 7,
-            quality = 1,
-            userId = 1L
-        )
-        val sleep2 = Sleep(
-            id = 2L,
-            startTime = testDateTime,
-            duration = 5,
-            quality = 2,
-            userId = 2L
-        )
-        val allSleeps = listOf(sleep1, sleep2)
+    fun quand_usecase_sexecute_devrait_ne_compter_que_les_sleeps_de_lutilisateur_courant() =
+        runBlocking {
 
-        Mockito.`when`(userUseCase.execute()).thenReturn(testUser)
-        Mockito.`when`(sleepRepository.getAllSleeps()).thenReturn(allSleeps)
+            val allSleeps = listOf(sleep1, sleep2)
 
-        // Act
-        val result = useCase.execute()
+            Mockito.`when`(userUseCase.execute()).thenReturn(testUser)
+            Mockito.`when`(sleepRepository.getAllSleeps()).thenReturn(allSleeps)
 
-        // Assert
-        assertEquals(1, result.size)
-        assertTrue(result.contains(sleep1))
-        assertFalse(result.contains(sleep2))
-    }
+            // Act
+            val result = useCase.execute()
+
+            // Assert
+            assertEquals(1, result.size)
+        }
+    /**
+     * quand_usecase_sexecute_devrait_retourner_seulement_les_sleeps_de_lutilisateur_courant:
+     *
+     * Tests that the use case returns only sleeps belonging to the current user.
+     */
+    @Test
+    fun quand_usecase_sexecute_devrait_ne_pas_retourner_les_sleeps_differents_de_lutilisateur_courant() =
+        runBlocking {
+
+            val allSleeps = listOf(sleep1, sleep2)
+
+            Mockito.`when`(userUseCase.execute()).thenReturn(testUser)
+            Mockito.`when`(sleepRepository.getAllSleeps()).thenReturn(allSleeps)
+
+            // Act
+            val result = useCase.execute()
+
+            // Assert
+            assertFalse(result.contains(sleep2))
+        }
+    /**
+     * quand_usecase_sexecute_devrait_retourner_seulement_les_sleeps_de_lutilisateur_courant:
+     *
+     * Tests that the use case returns only sleeps belonging to the current user.
+     */
+    @Test
+    fun quand_usecase_sexecute_devrait_retourner_seulement_les_sleeps_de_lutilisateur_courant() =
+        runBlocking {
+
+            val allSleeps = listOf(sleep1, sleep2)
+
+            Mockito.`when`(userUseCase.execute()).thenReturn(testUser)
+            Mockito.`when`(sleepRepository.getAllSleeps()).thenReturn(allSleeps)
+
+            // Act
+            val result = useCase.execute()
+
+            // Assert
+            assertTrue(result.contains(sleep1))
+        }
 
     /**
      * quand_user_est_null_usecase_devrait_renvoyer_MissingUserIdException:
@@ -117,7 +159,8 @@ class GetAllSleepsUseCaseTest {
     fun quand_user_est_null_usecase_devrait_renvoyer_MissingUserIdException(): Unit = runBlocking {
         // Arrange
         Mockito.`when`(userUseCase.execute()).thenReturn(null)
-        Mockito.`when`(sleepRepository.getAllSleeps()).thenReturn(emptyList()) // Important to avoid null pointer
+        Mockito.`when`(sleepRepository.getAllSleeps())
+            .thenReturn(emptyList()) // Important to avoid null pointer
 
         // Act + Assert
         assertFailsWith<MissingUserIdException> {
