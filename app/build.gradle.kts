@@ -85,4 +85,8 @@ dependencies {
     testImplementation(libs.arch.core.testing)
 
     testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.turbine)
+    testImplementation(libs.kotlin.test)
 }

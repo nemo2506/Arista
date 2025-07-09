@@ -10,9 +10,10 @@ class GetAllSleepsUseCase @Inject constructor(
     private val userUseCase: GetUserUseCase
 ) {
     suspend fun execute(): List<Sleep> {
+        val userId = userUseCase.execute()?.id
+                ?: throw MissingUserIdException()
         return sleepRepository.getAllSleeps().filter {
-            it.userId == (userUseCase.execute()?.id
-                ?: throw MissingUserIdException())
+            it.userId == userId
         }
     }
 }

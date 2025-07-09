@@ -12,6 +12,7 @@ class AddNewExerciseUseCase @Inject constructor(
 ) {
     suspend fun execute(exercise: List<Any>) {
         val userId = userUseCase.execute()?.id
+        ?: throw IllegalStateException("User ID is null")
         exerciseRepository.addExercise(Exercise(
             startTime = exercise[0] as LocalDateTime,
             duration = exercise[1] as Int,
