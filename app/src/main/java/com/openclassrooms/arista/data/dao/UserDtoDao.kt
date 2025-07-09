@@ -11,8 +11,9 @@ interface UserDtoDao {
     @Insert
     suspend fun insertUser(user: UserDto): Long
 
-    @Query("SELECT * FROM user")
-    fun getAllUser(): Flow<List<UserDto>>
+    @Query("SELECT * FROM user ORDER BY id ASC LIMIT 1")
+    fun getFirstUser(): Flow<UserDto>
+//    fun getAllUser(): Flow<List<UserDto>>
 
     @Query("DELETE FROM user WHERE id = :id")
     suspend fun deleteUserById(id: Long)

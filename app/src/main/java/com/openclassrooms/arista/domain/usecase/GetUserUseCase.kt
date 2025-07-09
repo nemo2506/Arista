@@ -4,9 +4,11 @@ import com.openclassrooms.arista.data.repository.UserRepository
 import com.openclassrooms.arista.domain.model.User
 import javax.inject.Inject
 
-class GetUserUseCase @Inject constructor(private val userRepository: UserRepository) {
-    suspend fun execute(): User? {
-        val user = userRepository.getAllUsers().firstOrNull()
-        return user
+class GetUserUseCase @Inject constructor(
+    private val userRepository: UserRepository
+) {
+    suspend fun execute(): User {
+        val userDto = userRepository.getFirstUser()
+        return User.fromDto(userDto)
     }
 }
