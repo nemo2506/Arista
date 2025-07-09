@@ -21,7 +21,10 @@ import java.time.LocalDateTime
 
 /**
  * Unit tests for the [GetAllExercisesUseCase] class.
- * Verifies the logic that filters exercises by the first user's ID.
+ * <p>
+ * Verifies that the use case correctly filters and returns exercises
+ * that belong to the first user retrieved from the [UserRepository].
+ * </p>
  */
 @RunWith(JUnit4::class)
 class GetAllExercisesUseCaseTest {
@@ -36,7 +39,8 @@ class GetAllExercisesUseCaseTest {
     private lateinit var closeable: AutoCloseable
 
     /**
-     * Initializes mocks and sets up the use case before each test.
+     * Setup method executed before each test.
+     * Initializes Mockito mocks and creates the use case instance.
      */
     @Before
     fun setUp() {
@@ -45,7 +49,8 @@ class GetAllExercisesUseCaseTest {
     }
 
     /**
-     * Cleans up mock resources after each test.
+     * Tear down method executed after each test.
+     * Cleans up Mockito mocks to avoid memory leaks.
      */
     @After
     fun tearDown() {
@@ -54,11 +59,11 @@ class GetAllExercisesUseCaseTest {
     }
 
     /**
-     * Tests that the use case returns the expected list of exercises
-     * when the repository contains exercises for the first user.
+     * Tests that the use case returns all exercises associated with the first user
+     * when the repositories contain the expected data.
      */
     @Test
-    fun when_Repository_Returns_Exercises_UseCase_Should_Return_Them(): Unit = runBlocking {
+    fun quand_le_repository_retourne_des_exercises_usecase_devrait_retourner_les_exercises(): Unit = runBlocking {
         // Arrange
         val testUser =
             User(id = 1L, name = "Test", email = "test@example.com", password = "password")
@@ -91,10 +96,11 @@ class GetAllExercisesUseCaseTest {
     }
 
     /**
-     * Tests that the use case returns an empty list when the exercise repository is empty.
+     * Tests that the use case returns an empty list
+     * when the exercise repository contains no exercises.
      */
     @Test
-    fun when_Repository_Returns_Empty_List_UseCase_Should_Return_EmptyList(): Unit = runBlocking {
+    fun quand_le_repository_retourne_une_liste_vide_usecase_devrait_retourner_une_liste_vide(): Unit = runBlocking {
         // Arrange
         val testUser = User(id = 1L, name = "Test", email = "test@example.com", password = "password")
         Mockito.`when`(userRepository.getAllUsers()).thenReturn(listOf(testUser))
