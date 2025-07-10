@@ -25,14 +25,14 @@ class ExerciseRepository(
         throw ExerciseRepositoryException("Failed to fetch exercises", e)
     }
 
-
-    // Add a new exercise
 //    fun addExercise(exercise: Exercise): Flow<Result<Unit>> = flow {
 //        exerciseDao.insertExercise(exercise.toDto())
 //        emit(Result.success(Unit))
 //    }.catch { e ->
 //        emit(Result.failure(ExerciseRepositoryException("Failed to add exercise", e)))
 //    }
+
+    // Add a new exercise
     fun addExercise(exercise: Exercise): Flow<Result<Unit>> = flow {
         val userId = userDtoDao.getFirstUserId()
             ?: throw ExerciseRepositoryException("No user found for assigning to exercise")

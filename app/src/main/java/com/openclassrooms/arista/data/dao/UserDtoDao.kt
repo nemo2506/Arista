@@ -8,15 +8,17 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDtoDao {
-    @Insert
-    suspend fun insertUser(user: UserDto): Long
 
-    @Query("SELECT * FROM user ORDER BY id ASC LIMIT 1")
-    fun getFirstUser(): Flow<UserDto?>
+    @Query("SELECT id FROM user ORDER BY id ASC LIMIT 1")
+    suspend fun getFirstUserId(): Long?
+
+    @Query("SELECT * FROM user WHERE id = :id")
+    fun getUserById(id: Long): Flow<UserDto?>
 
     @Query("DELETE FROM user WHERE id = :id")
     suspend fun deleteUserById(id: Long)
 
-    @Query("SELECT id FROM user ORDER BY id ASC LIMIT 1")
-    suspend fun getFirstUserId(): Long?
+    @Insert
+    suspend fun insertUser(user: UserDto): Long
+
 }
