@@ -91,69 +91,23 @@ class ExerciseViewModel @Inject constructor(
         }
     }
 
-    //    /**
-//     * @param intensity Boolean indicating if the identifier is between 1-10.
-//     */
-//    fun validateIntensityInterval(intensity: String) {
-//        var interval: Boolean? = null
-//        var format: Boolean = false
-//        try {
-//            val intensityValue = intensity.toInt()
-//            if (intensityValue !in 1..10) {
-//                interval = false
-//            } else {
-//                format = true
-//            }
-//        } catch (e: NumberFormatException) {
-//            format = true
-//        }
-//        _uiState.update { currentState ->
-//            currentState.copy(
-//                isIntensityIntervalReady = interval,
-//                isIntensityFormatReady = !format
-//            )
-//        }
-//    }
-//
-//    /**
-//     * @param duration Boolean indicating if the duration is not empty.
-//     */
-//    fun validateDuration(duration: String) {
-//        _uiState.update { currentState ->
-//            currentState.copy(
-//                isDurationReady = duration.isNotBlank()
-//            )
-//        }
-//    }
     fun validateDuration(duration: String): Boolean {
         return duration.isNotBlank()
     }
 
-    fun validateIntensity(intensity: String): Boolean {
+    fun validateIntensity(intensity: String): IntensityValidationResult {
         if (intensity.isBlank()) {
-//            Toast.makeText(requireContext(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
-            return false
+            return IntensityValidationResult.Blank
         }
-
         return try {
-            val intensityValue = intensity.toInt()
-            if (intensityValue !in 1..10) {
-//                Toast.makeText(
-//                    requireContext(),
-//                    R.string.intensity_should_be_between_1_and_10,
-//                    Toast.LENGTH_SHORT
-//                ).show()
-                false
+            val value = intensity.toInt()
+            if (value in 1..10) {
+                IntensityValidationResult.Valid
             } else {
-                true
+                IntensityValidationResult.OutOfRange
             }
         } catch (e: NumberFormatException) {
-//            Toast.makeText(
-//                requireContext(),
-//                R.string.invalid_input_please_enter_valid_numbers,
-//                Toast.LENGTH_SHORT
-//            ).show()
-            false
+            IntensityValidationResult.InvalidNumber
         }
     }
 }
@@ -172,3 +126,10 @@ data class UiState(
     var isDurationReady: Boolean? = null,
     var message: String? = null
 )
+
+sealed class IntensityValidationResult {
+    object Valid : IntensityValidationResult()
+    object Blank : IntensityValidationResult()
+    object InvalidNumber : IntensityValidationResult()
+    object OutOfRange : IntensityValidationResult()
+}
