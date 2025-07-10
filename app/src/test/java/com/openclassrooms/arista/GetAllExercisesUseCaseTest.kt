@@ -6,6 +6,8 @@ import com.openclassrooms.arista.domain.model.Exercise
 import com.openclassrooms.arista.domain.model.ExerciseCategory
 import com.openclassrooms.arista.domain.model.User
 import com.openclassrooms.arista.domain.usecase.GetAllExercisesUseCase
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.runners.JUnit4
 import org.junit.After
@@ -45,7 +47,7 @@ class GetAllExercisesUseCaseTest {
     @Before
     fun setUp() {
         closeable = MockitoAnnotations.openMocks(this)
-        getAllExercisesUseCase = GetAllExercisesUseCase(exerciseRepository, userRepository)
+        getAllExercisesUseCase = GetAllExercisesUseCase(exerciseRepository)
     }
 
     /**
@@ -65,10 +67,10 @@ class GetAllExercisesUseCaseTest {
     @Test
     fun quand_le_repository_retourne_des_exercises_usecase_devrait_retourner_les_exercises(): Unit = runBlocking {
         // Arrange
-        val testUser =
-            User(id = 1L, name = "Test", email = "test@example.com", password = "password")
+        val testUserDto =
+            User(id = 1L, name = "Test", email = "test@example.com", password = "password").toDto()
 
-        Mockito.`when`(userRepository.getAllUsers()).thenReturn(listOf(testUser))
+        Mockito.`when`(userRepository.getFirstUser()).thenReturn(testUserDto)
 
         val fakeExercises = listOf(
             Exercise(
@@ -86,14 +88,17 @@ class GetAllExercisesUseCaseTest {
                 userId = 1
             )
         )
-        Mockito.`when`(exerciseRepository.getAllExercises()).thenReturn(fakeExercises)
+
+        // Return a Flow from the mock
+        Mockito.`when`(exerciseRepository.getAllExercises()).thenReturn(flowOf(fakeExercises))
 
         // Act
-        val result = getAllExercisesUseCase.execute()
+        val result = getAllExercisesUseCase.execute().first()
 
         // Assert
         assertEquals(fakeExercises, result)
     }
+
 
     /**
      * Tests that the use case returns an empty list
@@ -102,14 +107,17 @@ class GetAllExercisesUseCaseTest {
     @Test
     fun quand_le_repository_retourne_une_liste_vide_usecase_devrait_retourner_une_liste_vide(): Unit = runBlocking {
         // Arrange
-        val testUser = User(id = 1L, name = "Test", email = "test@example.com", password = "password")
-        Mockito.`when`(userRepository.getAllUsers()).thenReturn(listOf(testUser))
-        Mockito.`when`(exerciseRepository.getAllExercises()).thenReturn(emptyList())
+        val testUserDto = User(id = 1L, name = "Test", email = "test@example.com", password = "password").toDto()
+        Mockito.`when`(userRepository.getFirstUser()).thenReturn(testUserDto)
+
+        // Return Flow of empty list
+        Mockito.`when`(exerciseRepository.getAllExercises()).thenReturn(flowOf(emptyList()))
 
         // Act
-        val result = getAllExercisesUseCase.execute()
+        val result = getAllExercisesUseCase.execute().first()
 
         // Assert
         assertTrue(result.isEmpty())
     }
+
 }

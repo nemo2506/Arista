@@ -3,21 +3,21 @@ package com.openclassrooms.arista
 import com.openclassrooms.arista.data.repository.ExerciseRepository
 import com.openclassrooms.arista.domain.model.Exercise
 import com.openclassrooms.arista.domain.model.ExerciseCategory
-import com.openclassrooms.arista.domain.model.User
 import com.openclassrooms.arista.domain.usecase.AddNewExerciseUseCase
-import com.openclassrooms.arista.domain.usecase.GetUserUseCase
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.verify
+import org.mockito.Mock
 import java.time.LocalDateTime
-import kotlin.test.assertFailsWith
+import kotlin.test.assertEquals
+import org.junit.After
+import org.junit.Assert.assertTrue
 
 /**
  * Unit tests for [AddNewExerciseUseCase].
@@ -25,71 +25,70 @@ import kotlin.test.assertFailsWith
 @RunWith(JUnit4::class)
 class AddNewExerciseUseCaseTest {
 
+    /** Mocked repository to retrieve exercise. */
     @Mock
     private lateinit var exerciseRepository: ExerciseRepository
-    @Mock
-    private lateinit var getUserUseCase: GetUserUseCase
 
-    // This should NOT be mocked, it’s the class under test
-    private lateinit var useCase: AddNewExerciseUseCase
+    private lateinit var addNewExerciseUseCase: AddNewExerciseUseCase
 
+    /** AutoCloseable resource to manage mock lifecycle. */
     private lateinit var closeable: AutoCloseable
-    private val testDateTime = LocalDateTime.of(2025, 7, 9, 10, 0)
-    private val testCategory = ExerciseCategory.Football
-    private val testUser = User(
-        id = 1L,
-        name = "Test",
-        email = "test@example.com",
-        password = "password"
-    )
 
-    /**
-     * Initializes mocks and sets up the use case before each test.
-     */
     @Before
     fun setUp() {
         closeable = MockitoAnnotations.openMocks(this)
-        useCase = AddNewExerciseUseCase(exerciseRepository, getUserUseCase)
+        addNewExerciseUseCase = AddNewExerciseUseCase(exerciseRepository)
     }
 
     /**
-     * Cleans up mock resources after each test.
+     * Cleanup mocks after each test.
      */
     @After
     fun tearDown() {
-        closeable.close()  // Clean up mocks
+        closeable.close()
         Mockito.framework().clearInlineMocks()
     }
 
     @Test
-    fun quand_usecase_sexecute_avec_un_user_valide_devrait_appeler_le_repository_avec_lexercise_correct() = runBlocking {
-        // Arrange
-        Mockito.`when`(getUserUseCase.execute()).thenReturn(testUser)
-        val input = listOf(testDateTime, 30, testCategory, 3)
+    fun lorsque_le_referentiel_reussit_et_le_cas_d_utilisation_doit_renvoyer_un_resultat_reussi() =
+        runBlocking {
+            // Arrange
+            val exercise = Exercise(
+                startTime = LocalDateTime.now(),
+                duration = 30,
+                category = ExerciseCategory.Running,
+                intensity = 5,
+                userId = 1L
+            )
+            Mockito.`when`(exerciseRepository.addExercise(exercise))
+                .thenReturn(flowOf(Result.success(Unit)))
+            // Act
+            val result = addNewExerciseUseCase.execute(exercise).first()
 
-        // Act
-        useCase.execute(input)
-
-        // Assert
-        val expectedExercise = Exercise(
-            startTime = testDateTime,
-            duration = 30,
-            category = testCategory,
-            intensity = 3,
-            userId = 1L
-        )
-        verify(exerciseRepository).addExercise(expectedExercise)
-    }
+            // Assert
+            assertTrue(result.isSuccess)
+        }
 
     @Test
-    fun quand_user_est_null_usecase_devrait_renvoyer_IllegalStateException(): Unit = runBlocking {
-        // Arrange
-        Mockito.`when`(getUserUseCase.execute()).thenReturn(null)
-        val input = listOf(testDateTime, 30, testCategory, 3)
+    fun lorsque_le_referentiel_echoue_et_le_cas_d_utilisation_doit_renvoyer_un_echec_de_resultat() =
+        runBlocking {
+            // Arrange
+            val exercise = Exercise(
+                startTime = LocalDateTime.now(),
+                duration = 45,
+                category = ExerciseCategory.Riding,
+                intensity = 7,
+                userId = 1L
+            )
+            val exception = RuntimeException("Insert failed")
+            Mockito.`when`(exerciseRepository.addExercise(exercise))
+                .thenReturn(flowOf(Result.failure(exception)))
+            // Act
+            val result = addNewExerciseUseCase.execute(exercise).first()
 
-        // Act + Assert
-        assertFailsWith<IllegalStateException> {
-            useCase.execute(input)
+            // Assert
+            assertTrue(result.isFailure)
+            assertEquals("Insert failed", result.exceptionOrNull()?.message)
         }
-    }
 }
+

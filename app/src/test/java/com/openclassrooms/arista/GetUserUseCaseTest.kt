@@ -4,16 +4,16 @@ import com.openclassrooms.arista.data.repository.UserRepository
 import com.openclassrooms.arista.domain.model.User
 import com.openclassrooms.arista.domain.usecase.GetUserUseCase
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import org.mockito.Mock
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import org.junit.After
+import org.junit.Assert.assertNull
 
 /**
  * Unit tests for the [GetUserUseCase] class.
@@ -61,27 +61,27 @@ class GetUserUseCaseTest {
      * the execute method returns the first user.
      */
     @Test
-    fun quand_le_repository_contient_des_utilisateurs_execute_doit_retourner_le_premier_utilisateur() = runBlocking {
-        // Arrange
-        val testUser = User(id = 1L, name = "Test User", email = "test@example.com", password = "pass")
-        Mockito.`when`(userRepository.getAllUsers()).thenReturn(listOf(testUser))
+    fun quand_le_repository_contient_des_utilisateurs_execute_doit_retourner_le_premier_utilisateur() =
+        runBlocking {
+            // Arrange
+            val testUser =
+                User(id = 1L, name = "Test User", email = "test@example.com", password = "pass")
+            Mockito.`when`(userRepository.getFirstUser()).thenReturn(testUser.toDto())
+            // Act
+            val result = useCase.execute()
 
-        // Act
-        val result = useCase.execute()
-
-        // Assert
-        assertEquals(testUser, result)
-    }
+            // Assert
+            assertEquals(testUser, result)
+        }
 
     /**
      * Tests that when the repository is empty,
      * the execute method returns null.
      */
     @Test
-    fun quand_le_repository_est_vide_execute_doit_retourner_null() = runBlocking {
+    fun quand_le_user_est_vide_le_retour_du_repository_est_null(): Unit = runBlocking {
         // Arrange
-        Mockito.`when`(userRepository.getAllUsers()).thenReturn(emptyList())
-
+        Mockito.`when`(userRepository.getFirstUser()).thenReturn(null)
         // Act
         val result = useCase.execute()
 
