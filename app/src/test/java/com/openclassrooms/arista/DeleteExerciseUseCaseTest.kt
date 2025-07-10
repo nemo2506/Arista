@@ -54,7 +54,7 @@ class DeleteExerciseUseCaseTest {
     @Test
     fun quand_usecase_sexecute_devrait_appeler_le_repository_pour_supprimer_un_exercise(): Unit = runBlocking {
         // Act
-        useCase.execute(testExercise)
+        useCase.execute(this, testExercise)
         // Assert
         verify(exerciseRepository).deleteExercise(testExercise)
     }
