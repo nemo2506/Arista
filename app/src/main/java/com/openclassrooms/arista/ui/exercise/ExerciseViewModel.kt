@@ -45,11 +45,11 @@ class ExerciseViewModel @Inject constructor(
 
 
     fun add(
-            startTime : LocalDateTime,
-            duration : Int,
-            category : ExerciseCategory,
-            intensity : Int
-        ) {
+        startTime: LocalDateTime,
+        duration: Int,
+        category: ExerciseCategory,
+        intensity: Int
+    ) {
         val exercise = Exercise(
             startTime = startTime,
             duration = duration,
@@ -91,38 +91,69 @@ class ExerciseViewModel @Inject constructor(
         }
     }
 
-    /**
-     * @param intensity Boolean indicating if the identifier is between 1-10.
-     */
-    fun validateIntensityInterval(intensity: String) {
-        var interval: Boolean? = null
-        var format: Boolean = false
-        try {
-            val intensityValue = intensity.toInt()
-            if (intensityValue !in 1..10) {
-                interval = false
-            } else {
-                format = true
-            }
-        } catch (e: NumberFormatException) {
-            format = true
-        }
-        _uiState.update { currentState ->
-            currentState.copy(
-                isIntensityIntervalReady = interval,
-                isIntensityFormatReady = !format
-            )
-        }
+    //    /**
+//     * @param intensity Boolean indicating if the identifier is between 1-10.
+//     */
+//    fun validateIntensityInterval(intensity: String) {
+//        var interval: Boolean? = null
+//        var format: Boolean = false
+//        try {
+//            val intensityValue = intensity.toInt()
+//            if (intensityValue !in 1..10) {
+//                interval = false
+//            } else {
+//                format = true
+//            }
+//        } catch (e: NumberFormatException) {
+//            format = true
+//        }
+//        _uiState.update { currentState ->
+//            currentState.copy(
+//                isIntensityIntervalReady = interval,
+//                isIntensityFormatReady = !format
+//            )
+//        }
+//    }
+//
+//    /**
+//     * @param duration Boolean indicating if the duration is not empty.
+//     */
+//    fun validateDuration(duration: String) {
+//        _uiState.update { currentState ->
+//            currentState.copy(
+//                isDurationReady = duration.isNotBlank()
+//            )
+//        }
+//    }
+    fun validateDuration(duration: String): Boolean {
+        return duration.isNotBlank()
     }
 
-    /**
-     * @param duration Boolean indicating if the duration is not empty.
-     */
-    fun validateDuration(duration: String) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                isDurationReady = duration.isNotBlank()
-            )
+    fun validateIntensity(intensity: String): Boolean {
+        if (intensity.isBlank()) {
+//            Toast.makeText(requireContext(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return try {
+            val intensityValue = intensity.toInt()
+            if (intensityValue !in 1..10) {
+//                Toast.makeText(
+//                    requireContext(),
+//                    R.string.intensity_should_be_between_1_and_10,
+//                    Toast.LENGTH_SHORT
+//                ).show()
+                false
+            } else {
+                true
+            }
+        } catch (e: NumberFormatException) {
+//            Toast.makeText(
+//                requireContext(),
+//                R.string.invalid_input_please_enter_valid_numbers,
+//                Toast.LENGTH_SHORT
+//            ).show()
+            false
         }
     }
 }
