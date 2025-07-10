@@ -9,13 +9,15 @@ data class User(
     var password: String
 ) {
     companion object {
-        fun fromDto(dto: UserDto): User {
-            return User(
-                id = dto.id,
-                name = dto.name,
-                email = dto.email,
-                password = dto.password
-            )
+        fun fromDto(dto: UserDto?): User? {
+            return dto?.let {
+                User(
+                    id = it.id,
+                    name = it.name,
+                    email = it.email,
+                    password = it.password
+                )
+            }
         }
     }
 

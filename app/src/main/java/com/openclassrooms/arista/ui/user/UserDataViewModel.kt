@@ -32,4 +32,5 @@ class UserDataViewModel @Inject constructor(
             _userFlow.value = user
         }
     }
+
 }

@@ -7,8 +7,8 @@ import javax.inject.Inject
 class GetUserUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    suspend fun execute(): User {
+    suspend fun execute(): User? {
         val userDto = userRepository.getFirstUser()
-        return User.fromDto(userDto)
+        return User.fromDto(userDto) // will return null if dto is null
     }
 }

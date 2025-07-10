@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.first
 class UserRepository(private val userDao: UserDtoDao) {
 
     // Get all users
-    suspend fun getFirstUser(): UserDto {
-        try {
-            return userDao.getFirstUser().first()
+    suspend fun getFirstUser(): UserDto? {
+        return try {
+            userDao.getFirstUser().first()
         } catch (e: Exception) {
-            throw UserRepositoryException("Failed to fetch users", e)
+            null // or log the error
         }
     }
 

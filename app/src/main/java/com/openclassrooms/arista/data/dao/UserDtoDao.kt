@@ -12,8 +12,7 @@ interface UserDtoDao {
     suspend fun insertUser(user: UserDto): Long
 
     @Query("SELECT * FROM user ORDER BY id ASC LIMIT 1")
-    fun getFirstUser(): Flow<UserDto>
-//    fun getAllUser(): Flow<List<UserDto>>
+    fun getFirstUser(): Flow<UserDto?>
 
     @Query("DELETE FROM user WHERE id = :id")
     suspend fun deleteUserById(id: Long)
