@@ -77,9 +77,12 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSleepRepository(sleepDtoDao: SleepDtoDao): SleepRepository {
+    fun provideSleepRepository(
+        sleepDtoDao: SleepDtoDao,
+        userDtoDao: UserDtoDao
+    ): SleepRepository {
         return try {
-            SleepRepository(sleepDtoDao)
+            SleepRepository(sleepDtoDao, userDtoDao)
         } catch (e: Exception) {
             throw RuntimeException("Failed to provide SleepRepository", e)
         }
@@ -87,12 +90,16 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideExerciseRepository(exerciseDtoDao: ExerciseDtoDao): ExerciseRepository {
+    fun provideExerciseRepository(
+        exerciseDtoDao: ExerciseDtoDao,
+        userDtoDao: UserDtoDao
+    ): ExerciseRepository {
         return try {
-            ExerciseRepository(exerciseDtoDao)
+            ExerciseRepository(exerciseDtoDao, userDtoDao)
         } catch (e: Exception) {
             throw RuntimeException("Failed to provide ExerciseRepository", e)
         }
     }
+
 
 }
