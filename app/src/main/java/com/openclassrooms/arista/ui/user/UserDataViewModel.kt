@@ -10,12 +10,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import androidx.lifecycle.SavedStateHandle
 
 @HiltViewModel
 class UserDataViewModel @Inject constructor(
-    private val getUserUseCase: GetUserUseCase,
-    appState: SavedStateHandle
+    private val getUserUseCase: GetUserUseCase
 ) :
     ViewModel() {
 
@@ -28,9 +26,9 @@ class UserDataViewModel @Inject constructor(
 
     private fun loadUserData() {
         viewModelScope.launch {
-            val user = getUserUseCase.execute()
-            _userFlow.value = user
+            getUserUseCase.execute().collect { user ->
+                _userFlow.value = user
+            }
         }
     }
-
 }

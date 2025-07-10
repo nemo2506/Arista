@@ -34,9 +34,6 @@ class GetAllExercisesUseCaseTest {
     @Mock
     private lateinit var exerciseRepository: ExerciseRepository
 
-    @Mock
-    private lateinit var userRepository: UserRepository
-
     private lateinit var getAllExercisesUseCase: GetAllExercisesUseCase
     private lateinit var closeable: AutoCloseable
 
@@ -67,11 +64,6 @@ class GetAllExercisesUseCaseTest {
     @Test
     fun quand_le_repository_retourne_des_exercises_usecase_devrait_retourner_les_exercises(): Unit = runBlocking {
         // Arrange
-        val testUserDto =
-            User(id = 1L, name = "Test", email = "test@example.com", password = "password").toDto()
-
-        Mockito.`when`(userRepository.getFirstUser()).thenReturn(testUserDto)
-
         val fakeExercises = listOf(
             Exercise(
                 startTime = LocalDateTime.now(),
@@ -107,10 +99,6 @@ class GetAllExercisesUseCaseTest {
     @Test
     fun quand_le_repository_retourne_une_liste_vide_usecase_devrait_retourner_une_liste_vide(): Unit = runBlocking {
         // Arrange
-        val testUserDto = User(id = 1L, name = "Test", email = "test@example.com", password = "password").toDto()
-        Mockito.`when`(userRepository.getFirstUser()).thenReturn(testUserDto)
-
-        // Return Flow of empty list
         Mockito.`when`(exerciseRepository.getAllExercises()).thenReturn(flowOf(emptyList()))
 
         // Act

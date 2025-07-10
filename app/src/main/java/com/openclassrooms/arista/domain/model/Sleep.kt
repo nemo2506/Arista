@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 
 data class Sleep(
     @JvmField
-    var id: Long,
+    val id: Long? = null,
     var startTime: LocalDateTime,
     var duration: Int,
     var quality: Int,
@@ -25,7 +25,7 @@ data class Sleep(
 
     fun toDto(): SleepDto {
         return SleepDto(
-            id = this.id,
+            id = this.id ?: 0, // 0 means auto-generated in Room
             startTime = this.startTime,
             duration = this.duration,
             quality = this.quality,

@@ -3,17 +3,20 @@ package com.openclassrooms.arista.data.repository
 import com.openclassrooms.arista.data.dao.UserDtoDao
 import com.openclassrooms.arista.data.entity.UserDto
 import com.openclassrooms.arista.domain.model.User
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 class UserRepository(private val userDao: UserDtoDao) {
 
-    // Get all users
-    suspend fun getFirstUser(): UserDto? {
-        return try {
-            userDao.getFirstUser().first()
-        } catch (e: Exception) {
-            null // or log the error
-        }
+    // Get all first user
+    fun getFirstUser(): Flow<User?> {
+        return userDao.getFirstUser()
+            .map { dto -> User.fromDto(dto) } // safely converts or returns null
+            .catch { e ->
+                throw UserRepositoryException("Failed to fetch User", e)
+            }
     }
 
     // Add a new user

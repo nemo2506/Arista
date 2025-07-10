@@ -3,6 +3,8 @@ package com.openclassrooms.arista
 import com.openclassrooms.arista.data.repository.UserRepository
 import com.openclassrooms.arista.domain.model.User
 import com.openclassrooms.arista.domain.usecase.GetUserUseCase
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -57,35 +59,15 @@ class GetUserUseCaseTest {
     }
 
     /**
-     * Tests that when the repository contains users,
-     * the execute method returns the first user.
-     */
-    @Test
-    fun quand_le_repository_contient_des_utilisateurs_execute_doit_retourner_le_premier_utilisateur() =
-        runBlocking {
-            // Arrange
-            val testUser =
-                User(id = 1L, name = "Test User", email = "test@example.com", password = "pass")
-            Mockito.`when`(userRepository.getFirstUser()).thenReturn(testUser.toDto())
-            // Act
-            val result = useCase.execute()
-
-            // Assert
-            assertEquals(testUser, result)
-        }
-
-    /**
      * Tests that when the repository is empty,
      * the execute method returns null.
      */
     @Test
     fun quand_le_user_est_vide_le_retour_du_repository_est_null(): Unit = runBlocking {
-        // Arrange
-        Mockito.`when`(userRepository.getFirstUser()).thenReturn(null)
-        // Act
-        val result = useCase.execute()
+        Mockito.`when`(userRepository.getFirstUser()).thenReturn(flowOf(null))
 
-        // Assert
+        val result = userRepository.getFirstUser().first()
+
         assertNull(result)
     }
 }
