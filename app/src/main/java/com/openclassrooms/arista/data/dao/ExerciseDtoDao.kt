@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ExerciseDtoDao {
     @Insert
-    fun insertExercise(exercise: ExerciseDto): Long
+    suspend fun insertExercise(exercise: ExerciseDto): Long
 
     @Query("SELECT * FROM exercise WHERE userId = 1 ORDER BY startTime ASC") // hardcoded user ID
     fun getAllExercises(): Flow<List<ExerciseDto>>
 
     @Query("DELETE FROM exercise WHERE id = :id")
-    fun deleteExerciseById(id: Long)
+    suspend fun deleteExerciseById(id: Long)
 }

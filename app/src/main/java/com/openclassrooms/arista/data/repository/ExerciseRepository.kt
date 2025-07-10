@@ -1,6 +1,5 @@
 package com.openclassrooms.arista.data.repository
 
-import android.util.Log
 import com.openclassrooms.arista.data.dao.ExerciseDtoDao
 import com.openclassrooms.arista.domain.model.Exercise
 import kotlinx.coroutines.flow.Flow
@@ -21,24 +20,20 @@ class ExerciseRepository(private val exerciseDao: ExerciseDtoDao) {
             }
     }
 
-
     // Add a new exercise
     fun addExercise(exercise: Exercise): Flow<Result<Unit>> = flow {
-        Log.d("MARC3", "addExercise: "+exercise.toDto())
         exerciseDao.insertExercise(exercise.toDto())
         emit(Result.success(Unit))
     }.catch { e ->
         emit(Result.failure(ExerciseRepositoryException("Failed to add exercise", e)))
     }
 
-
-    // Delete an exercise
-    fun deleteExercise(exercise: Exercise) {
-        try {
-            val id = exercise.id ?: throw MissingExerciseIdException()
-            exerciseDao.deleteExerciseById(id)
-        } catch (e: Exception) {
-            throw ExerciseRepositoryException("Failed to delete exercise", e)
-        }
+    // Del a exercise
+    fun deleteExercise(exercise: Exercise): Flow<Result<Unit>> = flow {
+        val id = exercise.id ?: throw MissingExerciseIdException()
+        exerciseDao.deleteExerciseById(id)
+        emit(Result.success(Unit))
+    }.catch { e ->
+        emit(Result.failure(ExerciseRepositoryException("Failed to del exercise", e)))
     }
 }

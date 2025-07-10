@@ -1,6 +1,5 @@
 package com.openclassrooms.arista.ui.exercise
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.openclassrooms.arista.domain.model.Exercise
 import com.openclassrooms.arista.domain.usecase.AddNewExerciseUseCase
@@ -63,7 +62,6 @@ class ExerciseViewModel @Inject constructor(
                 if (result.isFailure) {
                     _uiState.update { it.copy(message = result.exceptionOrNull()?.message) }
                 } else {
-                    Log.d("MARC1", "add: refreshed")
                     loadAllExercises() // refresh
                 }
             }
@@ -72,7 +70,13 @@ class ExerciseViewModel @Inject constructor(
 
     fun deleteExercise(exercise: Exercise) {
         viewModelScope.launch {
-            deleteExerciseUseCase.execute(exercise)
+            deleteExerciseUseCase.execute(exercise).collect { result ->
+                if (result.isFailure) {
+                    _uiState.update { it.copy(message = result.exceptionOrNull()?.message) }
+                } else {
+                    loadAllExercises() // refresh
+                }
+            }
         }
     }
 
