@@ -5,7 +5,6 @@ import com.openclassrooms.arista.domain.model.Exercise
 import com.openclassrooms.arista.domain.usecase.AddNewExerciseUseCase
 import com.openclassrooms.arista.domain.usecase.DeleteExerciseUseCase
 import com.openclassrooms.arista.domain.usecase.GetAllExercisesUseCase
-import com.openclassrooms.arista.domain.usecase.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +12,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.openclassrooms.arista.domain.model.ExerciseCategory
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -23,51 +24,26 @@ class ExerciseViewModel @Inject constructor(
     private val addNewExerciseUseCase: AddNewExerciseUseCase,
     private val deleteExerciseUseCase: DeleteExerciseUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(UiState())
 
-    //    val exercisesFlow: StateFlow<List<Exercise>> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            loadAllExercises()
-        }
-    }
-
-    suspend fun deleteExercise(exercise: Exercise) {
-        deleteExerciseUseCase.execute(exercise)
         loadAllExercises()
     }
 
-    //    private suspend fun loadAllExercises() {
-//        val exercises = getAllExercisesUseCase.execute()
-//        _exercisesFlow.value = exercises
-//    }
-    private fun loadAllExercises() {
-        viewModelScope.launch() {
-            // Attempt to log in and update UI state based on the result
-            when (val update = getAllExercisesUseCase.execute()) {
-
-                // If balance fails, update state with failure message
-                is Result.Failure -> {
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            message = update.message
-                        )
-                    }
+    fun loadAllExercises() {
+        viewModelScope.launch {
+            getAllExercisesUseCase.execute()
+                .catch { error ->
+                    _uiState.update { it.copy(message = error.message ?: "Unknown error") }
                 }
-
-                // If balance is successful, update state with login success
-                is Result.Success -> {
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            exercises = update.value.exercises
-                        )
-                    }
+                .collect { exercises ->
+                    _uiState.update { it.copy(exercises = exercises, message = null) }
                 }
-            }
         }
     }
+
 
     fun add(
         startTime: LocalDateTime,
@@ -82,11 +58,16 @@ class ExerciseViewModel @Inject constructor(
                     duration = duration,
                     category = category,
                     intensity = intensity,
-                    userId = 1L // hardcoded user ID
+                    userId = 1L
                 )
             )
             loadAllExercises()
         }
+    }
+
+    suspend fun deleteExercise(exercise: Exercise) {
+        deleteExerciseUseCase.execute(exercise)
+        loadAllExercises()
     }
 
     /**

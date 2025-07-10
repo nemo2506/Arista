@@ -2,20 +2,24 @@ package com.openclassrooms.arista.data.repository
 
 import com.openclassrooms.arista.data.dao.ExerciseDtoDao
 import com.openclassrooms.arista.domain.model.Exercise
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 class ExerciseRepository(private val exerciseDao: ExerciseDtoDao) {
 
     // Get all exercises
-    suspend fun getAllExercises(): List<Exercise> {
-        return try {
-            exerciseDao.getAllExercises()
-                .first()
-                .map { Exercise.fromDto(it) }
-        } catch (e: Exception) {
-            throw ExerciseRepositoryException("Failed to fetch exercises", e)
-        }
+    fun getAllExercises(): Flow<List<Exercise>> {
+        return exerciseDao.getAllExercises()
+            .map { dtoList ->
+                dtoList.map { Exercise.fromDto(it) }
+            }
+            .catch { e ->
+                throw ExerciseRepositoryException("Failed to fetch exercises", e)
+            }
     }
+
 
     // Add a new exercise
     suspend fun addExercise(exercise: Exercise) {
