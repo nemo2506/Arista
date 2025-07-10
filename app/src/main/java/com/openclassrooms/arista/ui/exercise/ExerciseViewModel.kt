@@ -66,7 +66,7 @@ class ExerciseViewModel @Inject constructor(
      * @param category The category of the exercise.
      * @param intensity The intensity of the exercise (1 to 10).
      */
-    fun add(
+    fun addExercise(
         startTime: LocalDateTime,
         duration: Int,
         category: ExerciseCategory,
@@ -144,17 +144,6 @@ class ExerciseViewModel @Inject constructor(
 }
 
 /**
- * Data class that represents the UI state for the exercise screen.
- *
- * @param exercises List of exercises to display.
- * @param message Optional error or status message for the UI.
- */
-data class UiState(
-    var exercises: List<Exercise>? = null,
-    var message: String? = null
-)
-
-/**
  * Represents the result of validating an intensity input string.
  */
 sealed class IntensityValidationResult {
@@ -170,3 +159,14 @@ sealed class IntensityValidationResult {
     /** Indicates the input number was outside the 1..10 range. */
     object OutOfRange : IntensityValidationResult()
 }
+
+/**
+ * Data class that represents the UI state for the exercise screen.
+ *
+ * @param exercises List of exercises to display.
+ * @param message Optional error or status message for the UI.
+ */
+data class UiState(
+    var exercises: List<Exercise>? = null,
+    var message: String? = null
+)

@@ -179,15 +179,11 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
 
         if (!isDurationValid || !isIntensityValid) return
 
-        val duration = durationStr.toInt()
-        val intensity = intensityStr.toInt()
-        val category = categorySpinner.selectedItem as ExerciseCategory
-
-        viewModel.add(
+        viewModel.addExercise(
             startTime = LocalDateTime.now(),
-            duration = duration,
-            category = category,
-            intensity = intensity
+            duration = durationStr.toInt(),
+            category = categorySpinner.selectedItem as ExerciseCategory,
+            intensity = intensityStr.toInt()
         )
     }
 
