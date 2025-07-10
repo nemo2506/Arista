@@ -1,5 +1,6 @@
 package com.openclassrooms.arista.ui.exercise
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.openclassrooms.arista.domain.model.Exercise
 import com.openclassrooms.arista.domain.usecase.AddNewExerciseUseCase
@@ -13,7 +14,6 @@ import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.openclassrooms.arista.domain.model.ExerciseCategory
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -46,28 +46,34 @@ class ExerciseViewModel @Inject constructor(
 
 
     fun add(
-        startTime: LocalDateTime,
-        duration: Int,
-        category: ExerciseCategory,
-        intensity: Int
-    ) {
+            startTime : LocalDateTime,
+            duration : Int,
+            category : ExerciseCategory,
+            intensity : Int
+        ) {
+        val exercise = Exercise(
+            startTime = startTime,
+            duration = duration,
+            category = category,
+            intensity = intensity,
+            userId = 1
+        )
         viewModelScope.launch {
-            addNewExerciseUseCase.execute(
-                Exercise(
-                    startTime = startTime,
-                    duration = duration,
-                    category = category,
-                    intensity = intensity,
-                    userId = 1L
-                )
-            )
-            loadAllExercises()
+            addNewExerciseUseCase.execute(exercise).collect { result ->
+                if (result.isFailure) {
+                    _uiState.update { it.copy(message = result.exceptionOrNull()?.message) }
+                } else {
+                    Log.d("MARC1", "add: refreshed")
+                    loadAllExercises() // refresh
+                }
+            }
         }
     }
 
-    suspend fun deleteExercise(exercise: Exercise) {
-        deleteExerciseUseCase.execute(exercise)
-        loadAllExercises()
+    fun deleteExercise(exercise: Exercise) {
+        viewModelScope.launch {
+            deleteExerciseUseCase.execute(exercise)
+        }
     }
 
     /**

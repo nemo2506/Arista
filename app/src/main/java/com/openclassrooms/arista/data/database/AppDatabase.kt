@@ -114,6 +114,15 @@ abstract class AppDatabase : RoomDatabase() {
                     userId = 2
                 )
             )
+            exerciseDtoDao.insertExercise(
+                ExerciseDto(
+                    startTime = LocalDateTime.now(),
+                    duration = 240,
+                    category = ExerciseCategory.Football,
+                    intensity = 3,
+                    userId = 1
+                )
+            )
         }
     }
 }

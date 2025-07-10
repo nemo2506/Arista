@@ -1,19 +1,16 @@
 package com.openclassrooms.arista.domain.usecase
 
+import android.util.Log
 import com.openclassrooms.arista.data.repository.ExerciseRepository
 import com.openclassrooms.arista.domain.model.Exercise
-import java.time.LocalDateTime
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AddNewExerciseUseCase @Inject constructor(
     private val exerciseRepository: ExerciseRepository
 ) {
-    suspend fun execute(exercise: Exercise) {
-        try {
-            exerciseRepository.addExercise(exercise)
-        } catch (e: Exception) {
-            throw IllegalStateException("User ID is null")
-        }
-
+    fun execute(exercise: Exercise): Flow<Result<Unit>> {
+        Log.d("MARC2", "execute: $exercise")
+        return exerciseRepository.addExercise(exercise)
     }
 }
