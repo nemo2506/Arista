@@ -16,4 +16,7 @@ interface UserDtoDao {
 
     @Query("DELETE FROM user WHERE id = :id")
     suspend fun deleteUserById(id: Long)
+
+    @Query("SELECT id FROM user ORDER BY id ASC LIMIT 1")
+    suspend fun getFirstUserId(): Long?
 }
