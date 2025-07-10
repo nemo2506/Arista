@@ -24,7 +24,8 @@ class ExerciseViewModel @Inject constructor(
     private val deleteExerciseUseCase: DeleteExerciseUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
-//    val exercisesFlow: StateFlow<List<Exercise>> = _uiState.asStateFlow()
+
+    //    val exercisesFlow: StateFlow<List<Exercise>> = _uiState.asStateFlow()
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     init {
@@ -38,7 +39,7 @@ class ExerciseViewModel @Inject constructor(
         loadAllExercises()
     }
 
-//    private suspend fun loadAllExercises() {
+    //    private suspend fun loadAllExercises() {
 //        val exercises = getAllExercisesUseCase.execute()
 //        _exercisesFlow.value = exercises
 //    }
@@ -51,7 +52,7 @@ class ExerciseViewModel @Inject constructor(
                 is Result.Failure -> {
                     _uiState.update { currentState ->
                         currentState.copy(
-                            errorMessage = update.message
+                            message = update.message
                         )
                     }
                 }
@@ -89,23 +90,49 @@ class ExerciseViewModel @Inject constructor(
     }
 
     /**
-     * Updates the UI state to reflect whether the user has provided valid data
-     * (non-empty intensity).
-     *
      * @param intensity Boolean indicating if the identifier is not empty.
      */
-    fun validateIntensity(intensity: String): Boolean {
-        return intensity.isNotBlank()
+    fun validateIntensityNotBlank(intensity: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                isIntensityIntervalReady = intensity.isNotBlank()
+            )
+        }
     }
 
     /**
-     * Updates the UI state to reflect whether the user has provided valid data
-     * (non-empty duration).
-     *
+     * @param intensity Boolean indicating if the identifier is between 1-10.
+     */
+    fun validateIntensityInterval(intensity: String) {
+        var interval: Boolean? = null
+        var format: Boolean = false
+        try {
+            val intensityValue = intensity.toInt()
+            if (intensityValue !in 1..10) {
+                interval = false
+            } else {
+                format = true
+            }
+        } catch (e: NumberFormatException) {
+            format = true
+        }
+        _uiState.update { currentState ->
+            currentState.copy(
+                isIntensityIntervalReady = interval,
+                isIntensityFormatReady = !format
+            )
+        }
+    }
+
+    /**
      * @param duration Boolean indicating if the duration is not empty.
      */
-    fun validateDuration(duration: String): Boolean {
-        return duration.isNotBlank()
+    fun validateDuration(duration: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                isDurationReady = duration.isNotBlank()
+            )
+        }
     }
 }
 
@@ -117,6 +144,9 @@ class ExerciseViewModel @Inject constructor(
  * and any error messages that may have occurred during login.
  */
 data class UiState(
-    val exercises: List<Exercise>? = null,
-    val errorMessage: String? = null
+    var exercises: List<Exercise>? = null,
+    var isIntensityIntervalReady: Boolean? = null,
+    var isIntensityFormatReady: Boolean? = null,
+    var isDurationReady: Boolean? = null,
+    var message: String? = null
 )

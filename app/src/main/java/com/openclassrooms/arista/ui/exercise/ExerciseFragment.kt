@@ -1,6 +1,7 @@
 package com.openclassrooms.arista.ui.exercise
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import com.openclassrooms.arista.databinding.FragmentExerciseBinding
 import com.openclassrooms.arista.domain.model.Exercise
 import com.openclassrooms.arista.domain.model.ExerciseCategory
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -72,6 +74,26 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
         observeExercises()
     }
 
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//
+//        val (durationEditText, categorySpinner, intensityEditText) = views
+//        val durationStr = durationEditText.text.toString().trim()
+//        val intensityStr = intensityEditText.text.toString().trim()
+//        val identifier = binding.identifier
+//        val password = binding.password
+//        /**
+//         * Enable login button only when both identifier and password are not empty.
+//         */
+//        identifier.addTextChangedListener(textWatcher)
+//        password.addTextChangedListener(textWatcher)
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            viewModel.uiState.collect {
+//                exerciseAdapter.submitList(it.exercises)
+//            }
+//        }
+//    }
+
     /**
      * Initializes the RecyclerView with a LinearLayoutManager and adapter.
      */
@@ -87,10 +109,14 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
     private fun observeExercises() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect {
-//                exercises -> exerciseAdapter.submitList(exercises)
                 exerciseAdapter.submitList(it.exercises)
             }
         }
+//        lifecycleScope.launch {
+//            viewModel.uiState.collect {
+//                exerciseAdapter.submitList(it.exercises)
+//            }
+//        }
     }
 
     /**
@@ -112,7 +138,24 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
                 .setTitle(R.string.add_new_exercise)
                 .setPositiveButton(R.string.add) { _, _ ->
                     lifecycleScope.launch {
-                        addExercise(it)
+                        Log.d("MARC", "showAddExerciseDialog: $it")
+                        val (durationEditText, categorySpinner, intensityEditText) = it
+                        val durationStr = durationEditText.text.toString().trim()
+                        val intensityStr = intensityEditText.text.toString().trim()
+                        val category = categorySpinner.selectedItem as ExerciseCategory
+
+                        viewModel.validateDuration(durationStr)
+                        viewModel.validateIntensityNotBlank(intensityStr)
+                        viewModel.validateIntensityInterval(intensityStr)
+                        viewModel.uiState.collectLatest {
+                            Log.d("MARC2", "showAddExerciseDialog: $it")
+                        }
+//                        viewModel.add(
+//                            startTime = LocalDateTime.now(),
+//                            duration = durationStr.toInt(),
+//                            category = category,
+//                            intensity = intensityStr.toInt()
+//                        )
                     }
                 }
                 .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
@@ -145,70 +188,91 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
      * @param views The Triple of input views: duration EditText, category Spinner, intensity EditText.
      */
 //    private suspend fun addExercise(views: Triple<EditText, Spinner, EditText>) {
-    private fun addExercise(views: Triple<EditText, Spinner, EditText>) {
-        val (durationEditText, categorySpinner, intensityEditText) = views
-
-        val durationStr = durationEditText.text.toString().trim()
-        val intensityStr = intensityEditText.text.toString().trim()
-
-//        val isDurationValid = validateDuration(durationStr)
-//        val isIntensityValid = validateIntensity(intensityStr)
+//    private fun addExercise(views: Triple<EditText, Spinner, EditText>) {
+//        val (durationEditText, categorySpinner, intensityEditText) = views
 //
-//        if (!isDurationValid || !isIntensityValid) return
+//        val durationStr = durationEditText.text.toString().trim()
+//        val intensityStr = intensityEditText.text.toString().trim()
+//
+//        val isDurationValid = viewModel.validateDuration(durationStr)
+//        val isIntensityValid = viewModel.validateIntensityNotBlank(intensityStr)
+//        val isIntensityIntervalValid = viewModel.validateIntensityInterval(intensityStr)
+//
+//        if (!isDurationValid)
+//            Toast.makeText(requireContext(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
+//        if (!isIntensityValid)
+//            Toast.makeText(requireContext(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
+//        if(isIntensityIntervalValid == null)
+//            Toast.makeText(
+//                requireContext(),
+//                R.string.invalid_input_please_enter_valid_numbers,
+//                Toast.LENGTH_SHORT
+//            ).show()
+//        if (!isIntensityIntervalValid)
+//            Toast.makeText(
+//                requireContext(),
+//                R.string.invalid_input_please_enter_valid_numbers,
+//                Toast.LENGTH_SHORT
+//            ).show()
+//
+//        if (!isDurationValid || !isIntensityValid || !isIntensityIntervalValid) return
+//
+//        val category = categorySpinner.selectedItem as ExerciseCategory
+//        viewModel.add(
+//            startTime = LocalDateTime.now(),
+//            duration = durationStr.toInt(),
+//            category = category,
+//            intensity = intensityStr.toInt()
+//        )
+//    }
 
-        val duration = durationStr.toInt()
-        val intensity = intensityStr.toInt()
-        val category = categorySpinner.selectedItem as ExerciseCategory
-        viewModel.add(startTime = LocalDateTime.now(),  duration = duration, category = category, intensity = intensity)
-    }
+//    /**
+//     * Validates that the duration input is not blank.
+//     * Shows a Toast message if invalid.
+//     * @param duration The duration input as String.
+//     * @return true if valid, false otherwise.
+//     */
+//    private fun validateDuration(duration: String): Boolean {
+//        if (duration.isBlank()) {
+//            Toast.makeText(requireContext(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
+//            return false
+//        }
+//        return true
+//    }
 
-    /**
-     * Validates that the duration input is not blank.
-     * Shows a Toast message if invalid.
-     * @param duration The duration input as String.
-     * @return true if valid, false otherwise.
-     */
-    private fun validateDuration(duration: String): Boolean {
-        if (duration.isBlank()) {
-            Toast.makeText(requireContext(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
-            return false
-        }
-        return true
-    }
-
-    /**
-     * Validates the intensity input is a number between 1 and 10.
-     * Shows appropriate Toast messages if invalid.
-     * @param intensity The intensity input as String.
-     * @return true if valid, false otherwise.
-     */
-    private fun validateIntensity(intensity: String): Boolean {
-        if (intensity.isBlank()) {
-            Toast.makeText(requireContext(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
-            return false
-        }
-
-        return try {
-            val intensityValue = intensity.toInt()
-            if (intensityValue !in 1..10) {
-                Toast.makeText(
-                    requireContext(),
-                    R.string.intensity_should_be_between_1_and_10,
-                    Toast.LENGTH_SHORT
-                ).show()
-                false
-            } else {
-                true
-            }
-        } catch (e: NumberFormatException) {
-            Toast.makeText(
-                requireContext(),
-                R.string.invalid_input_please_enter_valid_numbers,
-                Toast.LENGTH_SHORT
-            ).show()
-            false
-        }
-    }
+//    /**
+//     * Validates the intensity input is a number between 1 and 10.
+//     * Shows appropriate Toast messages if invalid.
+//     * @param intensity The intensity input as String.
+//     * @return true if valid, false otherwise.
+//     */
+//    private fun validateIntensity(intensity: String): Boolean {
+//        if (intensity.isBlank()) {
+//            Toast.makeText(requireContext(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show()
+//            return false
+//        }
+//
+//        return try {
+//            val intensityValue = intensity.toInt()
+//            if (intensityValue !in 1..10) {
+//                Toast.makeText(
+//                    requireContext(),
+//                    R.string.intensity_should_be_between_1_and_10,
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//                false
+//            } else {
+//                true
+//            }
+//        } catch (e: NumberFormatException) {
+//            Toast.makeText(
+//                requireContext(),
+//                R.string.invalid_input_please_enter_valid_numbers,
+//                Toast.LENGTH_SHORT
+//            ).show()
+//            false
+//        }
+//    }
 
     /**
      * Cleans up the binding reference to avoid memory leaks.
