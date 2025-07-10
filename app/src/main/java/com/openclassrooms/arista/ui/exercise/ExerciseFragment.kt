@@ -21,10 +21,25 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
+/**
+ * Interface used to allow deletion of an [Exercise] from the UI.
+ */
 interface DeleteExerciseInterface {
+    /**
+     * Callback to request deletion of an exercise.
+     *
+     * @param exercise The exercise to delete.
+     */
     fun deleteExercise(exercise: Exercise?)
 }
 
+/**
+ * Fragment responsible for displaying a list of exercises and allowing the user
+ * to add or delete exercises through the UI.
+ *
+ * It observes the [ExerciseViewModel] for state changes and interacts with
+ * the user through dialogs and buttons.
+ */
 @AndroidEntryPoint
 class ExerciseFragment : Fragment(), DeleteExerciseInterface {
 
@@ -34,6 +49,9 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
     private val viewModel: ExerciseViewModel by viewModels()
     private lateinit var exerciseAdapter: ExerciseAdapter
 
+    /**
+     * Inflates the fragment layout.
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,6 +61,9 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
         return binding.root
     }
 
+    /**
+     * Called when the view has been created. Sets up UI components and observers.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
@@ -50,12 +71,19 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
         observeExercises()
     }
 
+    /**
+     * Initializes the RecyclerView and its adapter.
+     */
     private fun setupRecyclerView() {
         exerciseAdapter = ExerciseAdapter(this)
         binding.exerciseRecyclerview.layoutManager = LinearLayoutManager(context)
         binding.exerciseRecyclerview.adapter = exerciseAdapter
     }
 
+    /**
+     * Observes the exercise UI state from the [ExerciseViewModel]
+     * and updates the list when changes occur.
+     */
     private fun observeExercises() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { flowState ->
@@ -64,10 +92,16 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
         }
     }
 
+    /**
+     * Sets up the Floating Action Button to show the "Add Exercise" dialog.
+     */
     private fun setupFab() {
         binding.fab.setOnClickListener { showAddExerciseDialog() }
     }
 
+    /**
+     * Shows a dialog allowing the user to input exercise details and add a new exercise.
+     */
     private fun showAddExerciseDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_exercise, null)
         setupDialogViews(dialogView).also {
@@ -80,6 +114,12 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
         }
     }
 
+    /**
+     * Binds views from the add exercise dialog layout.
+     *
+     * @param dialogView The inflated dialog view.
+     * @return Triple containing duration EditText, category Spinner, and intensity EditText.
+     */
     private fun setupDialogViews(dialogView: View): Triple<EditText, Spinner, EditText> {
         val durationEditText = dialogView.findViewById<EditText>(R.id.durationEditText)
         val categorySpinner = dialogView.findViewById<Spinner>(R.id.categorySpinner).apply {
@@ -95,6 +135,11 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
         return Triple(durationEditText, categorySpinner, intensityEditText)
     }
 
+    /**
+     * Validates input and triggers the creation of a new exercise.
+     *
+     * @param views A triple of duration EditText, category Spinner, and intensity EditText.
+     */
     private fun addExercise(views: Triple<EditText, Spinner, EditText>) {
         val (durationEditText, categorySpinner, intensityEditText) = views
 
@@ -137,6 +182,7 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
         val duration = durationStr.toInt()
         val intensity = intensityStr.toInt()
         val category = categorySpinner.selectedItem as ExerciseCategory
+
         viewModel.add(
             startTime = LocalDateTime.now(),
             duration = duration,
@@ -145,15 +191,22 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
         )
     }
 
+    /**
+     * Cleans up the binding when the view is destroyed.
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
+    /**
+     * Called when an exercise deletion is requested from the adapter.
+     *
+     * @param exercise The exercise to be deleted.
+     */
     override fun deleteExercise(exercise: Exercise?) {
         exercise?.let {
-            viewModel.deleteExercise(it) // ViewModel s'occupe de la coroutine
+            viewModel.deleteExercise(it)
         }
     }
-
 }

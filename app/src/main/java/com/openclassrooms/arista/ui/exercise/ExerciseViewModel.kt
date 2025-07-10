@@ -17,6 +17,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
+/**
+ * ViewModel responsible for managing and exposing exercise-related UI state.
+ *
+ * Handles business logic such as loading, adding, and deleting exercises.
+ * It also validates input fields like intensity and duration.
+ *
+ * @param getAllExercisesUseCase Use case to fetch all exercises.
+ * @param addNewExerciseUseCase Use case to add a new exercise.
+ * @param deleteExerciseUseCase Use case to delete an exercise.
+ */
 @HiltViewModel
 class ExerciseViewModel @Inject constructor(
     private val getAllExercisesUseCase: GetAllExercisesUseCase,
@@ -31,6 +41,10 @@ class ExerciseViewModel @Inject constructor(
         loadAllExercises()
     }
 
+    /**
+     * Loads all exercises from the repository and updates the UI state.
+     * Any errors encountered are captured and reflected in the UI state.
+     */
     fun loadAllExercises() {
         viewModelScope.launch {
             getAllExercisesUseCase.execute()
@@ -43,7 +57,15 @@ class ExerciseViewModel @Inject constructor(
         }
     }
 
-
+    /**
+     * Adds a new exercise using the provided parameters.
+     * On success, the list of exercises is refreshed.
+     *
+     * @param startTime The start time of the exercise.
+     * @param duration The duration of the exercise in minutes.
+     * @param category The category of the exercise.
+     * @param intensity The intensity of the exercise (1 to 10).
+     */
     fun add(
         startTime: LocalDateTime,
         duration: Int,
@@ -68,6 +90,11 @@ class ExerciseViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Deletes the specified exercise and refreshes the exercise list.
+     *
+     * @param exercise The exercise to be deleted.
+     */
     fun deleteExercise(exercise: Exercise) {
         viewModelScope.launch {
             deleteExerciseUseCase.execute(exercise).collect { result ->
@@ -81,20 +108,24 @@ class ExerciseViewModel @Inject constructor(
     }
 
     /**
-     * @param intensity Boolean indicating if the identifier is not empty.
+     * Validates whether the duration input is not blank.
+     *
+     * @param duration The duration input string.
+     * @return `true` if not blank, `false` otherwise.
      */
-    fun validateIntensityNotBlank(intensity: String) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                isIntensityIntervalReady = intensity.isNotBlank()
-            )
-        }
-    }
-
     fun validateDuration(duration: String): Boolean {
         return duration.isNotBlank()
     }
 
+    /**
+     * Validates the intensity string based on three cases:
+     * - Blank input
+     * - Not a number
+     * - Number not in the range 1..10
+     *
+     * @param intensity The intensity input string.
+     * @return A [IntensityValidationResult] indicating the result.
+     */
     fun validateIntensity(intensity: String): IntensityValidationResult {
         if (intensity.isBlank()) {
             return IntensityValidationResult.Blank
@@ -113,23 +144,29 @@ class ExerciseViewModel @Inject constructor(
 }
 
 /**
- * Data class that represents the UI state for the login screen.
+ * Data class that represents the UI state for the exercise screen.
  *
- * Holds information about whether the user data is ready,
- * whether the login was successful, if the screen is loading,
- * and any error messages that may have occurred during login.
+ * @param exercises List of exercises to display.
+ * @param message Optional error or status message for the UI.
  */
 data class UiState(
     var exercises: List<Exercise>? = null,
-    var isIntensityIntervalReady: Boolean? = null,
-    var isIntensityFormatReady: Boolean? = null,
-    var isDurationReady: Boolean? = null,
     var message: String? = null
 )
 
+/**
+ * Represents the result of validating an intensity input string.
+ */
 sealed class IntensityValidationResult {
+    /** Indicates the input is a valid number between 1 and 10. */
     object Valid : IntensityValidationResult()
+
+    /** Indicates the input was blank. */
     object Blank : IntensityValidationResult()
+
+    /** Indicates the input was not a valid number. */
     object InvalidNumber : IntensityValidationResult()
+
+    /** Indicates the input number was outside the 1..10 range. */
     object OutOfRange : IntensityValidationResult()
 }
