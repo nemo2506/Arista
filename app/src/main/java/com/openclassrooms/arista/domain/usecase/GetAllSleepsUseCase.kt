@@ -1,19 +1,15 @@
 package com.openclassrooms.arista.domain.usecase
 
-import com.openclassrooms.arista.data.repository.MissingUserIdException
 import com.openclassrooms.arista.data.repository.SleepRepository
 import com.openclassrooms.arista.domain.model.Sleep
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetAllSleepsUseCase @Inject constructor(
-    private val sleepRepository: SleepRepository,
-    private val userUseCase: GetUserUseCase
+    private val sleepRepository: SleepRepository
 ) {
-    suspend fun execute(): List<Sleep> {
-        val userId = userUseCase.execute()?.id
-                ?: throw MissingUserIdException()
-        return sleepRepository.getAllSleeps().filter {
-            it.userId == userId
-        }
+    fun execute(): Flow<List<Sleep>> {
+        return sleepRepository.getAllSleeps()
     }
 }
+
