@@ -74,7 +74,7 @@ class GetAllSleepsUseCaseTest {
     }
 
     @Test
-    fun lorsque_le_referentiel_renvoie_les_sleeps_et_le_cas_d_utilisation_doit_les_renvoyer() = runBlocking {
+    fun lorsque_le_repository_renvoie_les_sleeps_et_le_usecase_doit_les_renvoyer() = runBlocking {
         // Arrange
         val fakeSleeps = listOf(sleep1,sleep2)
         Mockito.`when`(sleepRepository.getAllSleeps()).thenReturn(flowOf(fakeSleeps))
@@ -86,7 +86,7 @@ class GetAllSleepsUseCaseTest {
     }
 
     @Test
-    fun lorsque_le_referentiel_renvoie_une_liste_vide_et_le_cas_d_utilisation_doit_renvoyer_une_liste_vide() = runBlocking {
+    fun lorsque_le_repository_renvoie_une_liste_vide_et_le_usecase_doit_renvoyer_une_liste_vide() = runBlocking {
         // Arrange
         Mockito.`when`(sleepRepository.getAllSleeps()).thenReturn(flowOf(emptyList()))
         // Act

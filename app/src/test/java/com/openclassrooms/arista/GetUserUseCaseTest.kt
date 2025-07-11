@@ -72,7 +72,7 @@ class GetUserUseCaseTest {
      * Verifies that [execute] emits the expected user when the repository contains a user.
      */
     @Test
-    fun execute_doit_emettre_l_utilisateur_du_referentiel(): Unit = runBlocking {
+    fun execute_doit_emettre_l_utilisateur_du_repository(): Unit = runBlocking {
         // Given
         Mockito.`when`(userRepository.getFirstUser()).thenReturn(flowOf(actualUser))
 
@@ -87,7 +87,7 @@ class GetUserUseCaseTest {
      * Verifies that [execute] emits null when the repository returns null.
      */
     @Test
-    fun execute_doit_emettre_null_si_le_referentiel_renvoie_null(): Unit = runBlocking {
+    fun execute_doit_emettre_null_si_la_base_est_vide(): Unit = runBlocking {
         // Given
         Mockito.`when`(userRepository.getFirstUser()).thenReturn(flowOf(null))
 

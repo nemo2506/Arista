@@ -50,7 +50,7 @@ class AddNewExerciseUseCaseTest {
     }
 
     @Test
-    fun lorsque_le_referentiel_reussit_et_le_cas_d_utilisation_doit_renvoyer_un_resultat_reussi() =
+    fun lorsque_le_repository_reussit_et_le_useCase_doit_renvoyer_un_resultat_reussi() =
         runBlocking {
             // Arrange
             val exercise = Exercise(
@@ -70,7 +70,7 @@ class AddNewExerciseUseCaseTest {
         }
 
     @Test
-    fun lorsque_le_referentiel_echoue_et_le_cas_d_utilisation_doit_renvoyer_un_echec_de_resultat() =
+    fun lorsque_le_repository_echoue_et_le_useCase_doit_renvoyer_un_echec_de_resultat() =
         runBlocking {
             // Arrange
             val exercise = Exercise(
