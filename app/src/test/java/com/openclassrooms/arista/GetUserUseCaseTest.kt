@@ -1,5 +1,6 @@
 package com.openclassrooms.arista
 
+import app.cash.turbine.test
 import com.openclassrooms.arista.data.repository.UserRepository
 import com.openclassrooms.arista.domain.model.User
 import com.openclassrooms.arista.domain.usecase.GetUserUseCase
@@ -20,26 +21,35 @@ import org.junit.Assert.assertNull
 /**
  * Unit tests for the [GetUserUseCase] class.
  *
- * Verifies the behavior of the execute method which should return
- * the first user if the list is not empty, or null otherwise.
+ * This class verifies the behavior of the [GetUserUseCase.execute] method,
+ * which is expected to return the first user from the repository if it exists,
+ * or null otherwise.
  */
 @RunWith(JUnit4::class)
 class GetUserUseCaseTest {
 
-    /** Mock of the user repository used for testing. */
+    /** Mocked instance of [UserRepository] used to simulate data source behavior. */
     @Mock
     private lateinit var userRepository: UserRepository
 
-    /** Instance of the use case to be tested. */
+    /** Instance of [GetUserUseCase] under test. */
     private lateinit var useCase: GetUserUseCase
 
-    /** AutoCloseable resource to manage mocks lifecycle. */
+    /** Handle for closing open mocks after tests. */
     private lateinit var closeable: AutoCloseable
 
+    /** A test user used in assertions. */
+    private val testUser = User(
+        id = 1L,
+        name = "John Doe",
+        email = "johndoe@example.com",
+        password = "LongPassword"
+    )
+
     /**
-     * Setup before each test.
+     * Prepares the test environment before each test case.
      *
-     * Opens mocks and instantiates the use case.
+     * Initializes mock objects and creates an instance of the use case.
      */
     @Before
     fun setUp() {
@@ -48,9 +58,9 @@ class GetUserUseCaseTest {
     }
 
     /**
-     * Cleanup after each test.
+     * Cleans up the test environment after each test case.
      *
-     * Closes mocks and releases resources.
+     * Closes open mocks and clears inline mock configurations.
      */
     @After
     fun tearDown() {
@@ -59,15 +69,32 @@ class GetUserUseCaseTest {
     }
 
     /**
-     * Tests that when the repository is empty,
-     * the execute method returns null.
+     * Verifies that [execute] emits the expected user when the repository contains a user.
      */
     @Test
-    fun quand_le_user_est_vide_le_retour_du_repository_est_null(): Unit = runBlocking {
+    fun execute_doit_emettre_l_utilisateur_du_referentiel(): Unit = runBlocking {
+        // Given
+        Mockito.`when`(userRepository.getFirstUser()).thenReturn(flowOf(testUser))
+
+        // When & Then
+        useCase.execute().test {
+            assertEquals(testUser, awaitItem())
+            awaitComplete()
+        }
+    }
+
+    /**
+     * Verifies that [execute] emits null when the repository returns null.
+     */
+    @Test
+    fun execute_doit_emettre_null_si_le_referentiel_renvoie_null(): Unit = runBlocking {
+        // Given
         Mockito.`when`(userRepository.getFirstUser()).thenReturn(flowOf(null))
 
-        val result = userRepository.getFirstUser().first()
-
-        assertNull(result)
+        // When & Then
+        useCase.execute().test {
+            assertNull(awaitItem())
+            awaitComplete()
+        }
     }
 }

@@ -83,7 +83,6 @@ class GetAllExercisesUseCaseTest {
 
         // Return a Flow from the mock
         Mockito.`when`(exerciseRepository.getAllExercises()).thenReturn(flowOf(fakeExercises))
-
         // Act
         val result = getAllExercisesUseCase.execute().first()
 
@@ -100,7 +99,6 @@ class GetAllExercisesUseCaseTest {
     fun quand_le_repository_retourne_une_liste_vide_usecase_devrait_retourner_une_liste_vide(): Unit = runBlocking {
         // Arrange
         Mockito.`when`(exerciseRepository.getAllExercises()).thenReturn(flowOf(emptyList()))
-
         // Act
         val result = getAllExercisesUseCase.execute().first()
 

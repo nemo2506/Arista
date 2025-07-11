@@ -9,9 +9,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.Mockito.mock
-import org.mockito.kotlin.verify
+import org.mockito.Mockito
+import org.mockito.Mock
 import java.time.LocalDateTime
+import org.junit.After
+import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
 
 /**
  * Tests unitaires pour la classe [DeleteExerciseUseCase].
@@ -23,10 +26,15 @@ import java.time.LocalDateTime
 class DeleteExerciseUseCaseTest {
 
     /** Mock du repository d'exercices utilisé pour les tests. */
-    private val exerciseRepository = mock(ExerciseRepository::class.java)
+//    private val exerciseRepository = mock(ExerciseRepository::class.java)
 
+    /** Mocked repository to retrieve exercise. */
+    @Mock
+    private lateinit var exerciseRepository: ExerciseRepository
     /** Instance du cas d'utilisation à tester. */
     private lateinit var useCase: DeleteExerciseUseCase
+    /** AutoCloseable resource to manage mock lifecycle. */
+    private lateinit var closeable: AutoCloseable
 
     /** Exercice de test utilisé pour valider la suppression. */
     private val testExercise = Exercise(
@@ -44,9 +52,18 @@ class DeleteExerciseUseCaseTest {
      */
     @Before
     fun setUp() {
+        closeable = MockitoAnnotations.openMocks(this)
         useCase = DeleteExerciseUseCase(exerciseRepository)
     }
 
+    /**
+     * Cleanup mocks after each test.
+     */
+    @After
+    fun tearDown() {
+        closeable.close()
+        Mockito.framework().clearInlineMocks()
+    }
     /**
      * Teste que l'exécution du use case appelle bien la méthode
      * `deleteExercise` du repository avec l'exercice donné.
@@ -55,6 +72,7 @@ class DeleteExerciseUseCaseTest {
     fun quand_usecase_sexecute_devrait_appeler_le_repository_pour_supprimer_un_exercise(): Unit = runBlocking {
         // Act
         useCase.execute(testExercise)
+
         // Assert
         verify(exerciseRepository).deleteExercise(testExercise)
     }
