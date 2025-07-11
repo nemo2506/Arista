@@ -39,7 +39,7 @@ class GetUserUseCaseTest {
     private lateinit var closeable: AutoCloseable
 
     /** A test user used in assertions. */
-    private val testUser = User(
+    private val actualUser = User(
         id = 1L,
         name = "John Doe",
         email = "johndoe@example.com",
@@ -74,11 +74,11 @@ class GetUserUseCaseTest {
     @Test
     fun execute_doit_emettre_l_utilisateur_du_referentiel(): Unit = runBlocking {
         // Given
-        Mockito.`when`(userRepository.getFirstUser()).thenReturn(flowOf(testUser))
+        Mockito.`when`(userRepository.getFirstUser()).thenReturn(flowOf(actualUser))
 
         // When & Then
         getUserUseCase.execute().test {
-            assertEquals(testUser, awaitItem())
+            assertEquals(actualUser, awaitItem())
             awaitComplete()
         }
     }
