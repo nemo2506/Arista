@@ -33,7 +33,7 @@ class GetUserUseCaseTest {
     private lateinit var userRepository: UserRepository
 
     /** Instance of [GetUserUseCase] under test. */
-    private lateinit var useCase: GetUserUseCase
+    private lateinit var getUserUseCase: GetUserUseCase
 
     /** Handle for closing open mocks after tests. */
     private lateinit var closeable: AutoCloseable
@@ -54,7 +54,7 @@ class GetUserUseCaseTest {
     @Before
     fun setUp() {
         closeable = MockitoAnnotations.openMocks(this)
-        useCase = GetUserUseCase(userRepository)
+        getUserUseCase = GetUserUseCase(userRepository)
     }
 
     /**
@@ -77,7 +77,7 @@ class GetUserUseCaseTest {
         Mockito.`when`(userRepository.getFirstUser()).thenReturn(flowOf(testUser))
 
         // When & Then
-        useCase.execute().test {
+        getUserUseCase.execute().test {
             assertEquals(testUser, awaitItem())
             awaitComplete()
         }
@@ -92,7 +92,7 @@ class GetUserUseCaseTest {
         Mockito.`when`(userRepository.getFirstUser()).thenReturn(flowOf(null))
 
         // When & Then
-        useCase.execute().test {
+        getUserUseCase.execute().test {
             assertNull(awaitItem())
             awaitComplete()
         }

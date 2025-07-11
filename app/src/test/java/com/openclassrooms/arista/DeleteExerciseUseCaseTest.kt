@@ -32,7 +32,7 @@ class DeleteExerciseUseCaseTest {
     @Mock
     private lateinit var exerciseRepository: ExerciseRepository
     /** Instance du cas d'utilisation à tester. */
-    private lateinit var useCase: DeleteExerciseUseCase
+    private lateinit var deleteExerciseUseCase: DeleteExerciseUseCase
     /** AutoCloseable resource to manage mock lifecycle. */
     private lateinit var closeable: AutoCloseable
 
@@ -53,7 +53,7 @@ class DeleteExerciseUseCaseTest {
     @Before
     fun setUp() {
         closeable = MockitoAnnotations.openMocks(this)
-        useCase = DeleteExerciseUseCase(exerciseRepository)
+        deleteExerciseUseCase = DeleteExerciseUseCase(exerciseRepository)
     }
 
     /**
@@ -71,7 +71,7 @@ class DeleteExerciseUseCaseTest {
     @Test
     fun quand_usecase_sexecute_devrait_appeler_le_repository_pour_supprimer_un_exercise(): Unit = runBlocking {
         // Act
-        useCase.execute(testExercise)
+        deleteExerciseUseCase.execute(testExercise)
 
         // Assert
         verify(exerciseRepository).deleteExercise(testExercise)
