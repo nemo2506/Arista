@@ -38,21 +38,14 @@ class ExerciseViewModel @Inject constructor(
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     init {
-        loadAllExercises()
+        observeExercises()
     }
 
-    /**
-     * Loads all exercises from the repository and updates the UI state.
-     * Any errors encountered are captured and reflected in the UI state.
-     */
-    fun loadAllExercises() {
+    private fun observeExercises() {
         viewModelScope.launch {
             getAllExercisesUseCase.execute()
-                .catch { error ->
-                    _uiState.update { it.copy(message = error.message ?: "Unknown error") }
-                }
-                .collect { exercises ->
-                    _uiState.update { it.copy(exercises = exercises, message = null) }
+                .collect {
+                    updatedList -> _uiState.update { it.copy(exercises = updatedList) }
                 }
         }
     }
@@ -83,8 +76,6 @@ class ExerciseViewModel @Inject constructor(
             addNewExerciseUseCase.execute(exercise).collect { result ->
                 if (result.isFailure) {
                     _uiState.update { it.copy(message = result.exceptionOrNull()?.message) }
-                } else {
-                    loadAllExercises() // refresh
                 }
             }
         }
@@ -100,12 +91,11 @@ class ExerciseViewModel @Inject constructor(
             deleteExerciseUseCase.execute(exercise).collect { result ->
                 if (result.isFailure) {
                     _uiState.update { it.copy(message = result.exceptionOrNull()?.message) }
-                } else {
-                    loadAllExercises() // refresh
                 }
             }
         }
     }
+
 
     /**
      * Validates whether the duration input is not blank.
