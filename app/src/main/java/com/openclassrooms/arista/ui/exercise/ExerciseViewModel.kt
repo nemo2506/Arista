@@ -1,5 +1,6 @@
 package com.openclassrooms.arista.ui.exercise
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.openclassrooms.arista.domain.model.Exercise
 import com.openclassrooms.arista.domain.usecase.AddNewExerciseUseCase
@@ -44,9 +45,26 @@ class ExerciseViewModel @Inject constructor(
     private fun observeExercises() {
         viewModelScope.launch {
             getAllExercisesUseCase.execute()
-                .collect {
-                    updatedList -> _uiState.update { it.copy(exercises = updatedList) }
+                .catch {
+                    _uiState.update { it.copy(isExerciseReady = false) }
                 }
+                .collect { exercises ->
+                    if (exercises.isEmpty()) {
+                        _uiState.update { it.copy(isExerciseReady = false) }
+                    } else {
+                        _uiState.update { it.copy(exercises = exercises) }
+                    }
+                }
+        }
+    }
+
+    fun reset() {
+        _uiState.update {
+            it.copy(
+                isExerciseReady = null,
+                isExerciseAdded = null,
+                isExerciseDeleted = null
+            )
         }
     }
 
@@ -75,7 +93,7 @@ class ExerciseViewModel @Inject constructor(
         viewModelScope.launch {
             addNewExerciseUseCase.execute(exercise).collect { result ->
                 if (result.isFailure) {
-                    _uiState.update { it.copy(message = result.exceptionOrNull()?.message) }
+                    _uiState.update { it.copy(isExerciseAdded = false) }
                 }
             }
         }
@@ -90,7 +108,7 @@ class ExerciseViewModel @Inject constructor(
         viewModelScope.launch {
             deleteExerciseUseCase.execute(exercise).collect { result ->
                 if (result.isFailure) {
-                    _uiState.update { it.copy(message = result.exceptionOrNull()?.message) }
+                    _uiState.update { it.copy(isExerciseDeleted = false) }
                 }
             }
         }
@@ -154,9 +172,10 @@ sealed class IntensityValidationResult {
  * Data class that represents the UI state for the exercise screen.
  *
  * @param exercises List of exercises to display.
- * @param message Optional error or status message for the UI.
  */
 data class UiState(
     var exercises: List<Exercise>? = null,
-    var message: String? = null
+    var isExerciseReady: Boolean? = null,
+    var isExerciseAdded: Boolean? = null,
+    var isExerciseDeleted: Boolean? = null
 )

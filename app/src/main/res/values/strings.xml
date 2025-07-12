@@ -18,5 +18,10 @@
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
     <string name="fill_all_fields">Please fill all fields.</string>
+    <string name="user_not_ready">No user</string>
+    <string name="exercice_not_ready">No exercise</string>
+    <string name="exercice_not_added">No adding exercise</string>
+    <string name="exercice_not_deleted">No deleting exercise</string>
+    <string name="sleep_not_ready">No sleep</string>
 
 </resources>

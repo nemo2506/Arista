@@ -88,6 +88,13 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { flowState ->
                 exerciseAdapter.submitList(flowState.exercises)
+                if (flowState.isExerciseReady == false)
+                    Toast.makeText(requireContext(), R.string.exercice_not_ready, Toast.LENGTH_SHORT).show()
+                if (flowState.isExerciseDeleted == false)
+                    Toast.makeText(requireContext(), R.string.exercice_not_deleted, Toast.LENGTH_SHORT).show()
+                if (flowState.isExerciseAdded == false)
+                    Toast.makeText(requireContext(), R.string.exercice_not_added, Toast.LENGTH_SHORT).show()
+
             }
         }
     }
@@ -141,6 +148,7 @@ class ExerciseFragment : Fragment(), DeleteExerciseInterface {
      * @param views A triple of duration EditText, category Spinner, and intensity EditText.
      */
     private fun addExercise(views: Triple<EditText, Spinner, EditText>) {
+        viewModel.reset()
         val (durationEditText, categorySpinner, intensityEditText) = views
 
         val durationStr = durationEditText.text.toString().trim()

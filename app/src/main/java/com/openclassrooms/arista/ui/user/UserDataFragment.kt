@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.openclassrooms.arista.databinding.FragmentUserDataBinding
 import com.openclassrooms.arista.domain.model.User
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.openclassrooms.arista.R
 import kotlinx.coroutines.launch
 
 /**
@@ -52,13 +54,20 @@ class UserDataFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeUser()
+    }
+
+    private fun observeUser() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.userFlow.collect { user: User? ->
-                user?.let {
-                    binding.etName.setText(it.name)
-                    binding.etEmail.setText(it.email)
+            viewModel.uiState.collect { uiState ->
+                uiState.user?.let { user ->
+                    binding.etName.setText(user.name)
+                    binding.etEmail.setText(user.email)
                 }
+                if (uiState.isUserReady == false)
+                    Toast.makeText(context, R.string.user_not_ready, Toast.LENGTH_SHORT).show()
             }
         }
     }
 }
+

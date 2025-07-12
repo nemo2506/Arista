@@ -19,4 +19,9 @@
     <string name="add">Ajouter</string>
     <string name="cancel">Annuler</string>
     <string name="fill_all_fields">Remplissez tous les champs</string>
+    <string name="user_not_ready">Aucun utilisateur</string>
+    <string name="exercice_not_ready">Aucun exercice</string>
+    <string name="exercice_not_added">N\'ajoutes pas l\'exercise</string>
+    <string name="exercice_not_deleted">N\'efface pas l\'exercise</string>
+    <string name="sleep_not_ready">Aucun sommeil</string>
 </resources>

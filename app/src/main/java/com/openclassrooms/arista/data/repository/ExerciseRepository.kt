@@ -16,21 +16,15 @@ class ExerciseRepository(
     // Get all exercises
     fun getAllExercises(): Flow<List<Exercise>> = flow {
         val userId = userDtoDao.getFirstUserId()
-            ?: throw ExerciseRepositoryException("No user found")
+            ?: return@flow emit(emptyList())
 
         exerciseDao.getAllExercisesByUserId(userId)
             .map { dtoList -> dtoList.map { Exercise.fromDto(it) } }
             .collect { emit(it) }
     }.catch { e ->
-        throw ExerciseRepositoryException("Failed to fetch exercises", e)
+        emit(emptyList())
     }
 
-//    fun addExercise(exercise: Exercise): Flow<Result<Unit>> = flow {
-//        exerciseDao.insertExercise(exercise.toDto())
-//        emit(Result.success(Unit))
-//    }.catch { e ->
-//        emit(Result.failure(ExerciseRepositoryException("Failed to add exercise", e)))
-//    }
 
     // Add a new exercise
     fun addExercise(exercise: Exercise): Flow<Result<Unit>> = flow {

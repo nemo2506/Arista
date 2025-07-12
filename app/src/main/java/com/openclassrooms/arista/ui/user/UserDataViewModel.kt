@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,8 +18,8 @@ class UserDataViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    private val _userFlow = MutableStateFlow<User?>(null)
-    val userFlow: StateFlow<User?> = _userFlow.asStateFlow()
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     init {
         loadUserData()
@@ -27,8 +28,22 @@ class UserDataViewModel @Inject constructor(
     private fun loadUserData() {
         viewModelScope.launch {
             getUserUseCase.execute().collect { user ->
-                _userFlow.value = user
+                if (user == null) {
+                    _uiState.update {
+                        it.copy(isUserReady = false)
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(user = user, isUserReady = true)
+                    }
+                }
             }
         }
     }
 }
+
+data class UiState(
+    var user: User? = null,
+    var message: String? = null,
+    var isUserReady: Boolean? = null
+)

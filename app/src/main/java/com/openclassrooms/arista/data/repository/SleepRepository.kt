@@ -12,17 +12,16 @@ class SleepRepository(
     private val sleepDao: SleepDtoDao,
     private val userDtoDao: UserDtoDao
 ) {
-
     // Get all sleeps
     fun getAllSleeps(): Flow<List<Sleep>> = flow {
         val userId = userDtoDao.getFirstUserId()
-            ?: throw SleepRepositoryException("No user found")
+            ?: return@flow emit(emptyList())
 
         sleepDao.getAllSleepByUserId(userId)
             .map { dtoList -> dtoList.map { Sleep.fromDto(it) } }
             .collect { emit(it) }
     }.catch { e ->
-        throw SleepRepositoryException("Failed to fetch sleeps", e)
+        emit(emptyList())
     }
 
     // Add a new sleep

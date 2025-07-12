@@ -1,5 +1,6 @@
 package com.openclassrooms.arista.data.repository
 
+import android.util.Log
 import com.openclassrooms.arista.data.dao.UserDtoDao
 import com.openclassrooms.arista.domain.model.User
 import kotlinx.coroutines.flow.Flow
@@ -9,17 +10,18 @@ import kotlinx.coroutines.flow.map
 
 class UserRepository(private val userDtoDao: UserDtoDao) {
 
-    // Get all first user
+    // Get the first user safely
     fun getFirstUser(): Flow<User?> = flow {
         val id = userDtoDao.getFirstUserId()
-            ?: throw UserRepositoryException("No user found")
+            ?: return@flow emit(null)
 
         userDtoDao.getUserById(id)
             .map { dto -> dto?.let { User.fromDto(it) } }
             .collect { user -> emit(user) }
     }.catch { e ->
-        throw UserRepositoryException("Failed to fetch User", e)
+        emit(null)
     }
+
 
 
     // Add a new user
