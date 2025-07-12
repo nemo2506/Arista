@@ -62,67 +62,67 @@ abstract class AppDatabase : RoomDatabase() {
 
         suspend fun populateDatabase(sleepDao: SleepDtoDao, exerciseDtoDao: ExerciseDtoDao, userDtoDao: UserDtoDao) {
 
-//            userDtoDao.insertUser(
-//                UserDto(
-//                    name = "John Doe",
-//                    email = "johndoe@example.com",
-//                    password = "LongPassword"
-//                )
-//            )
-//
-//            userDtoDao.insertUser(
-//                UserDto(
-//                    name = "Joe Second",
-//                    email = "joe-backup@example.com",
-//                    password = "Just-Password"
-//                )
-//            )
-//
-//            sleepDao.insertSleep(
-//                SleepDto(
-//                    startTime = LocalDateTime.now(),
-//                    duration = 480,
-//                    quality = 4,
-//                    userId = 1
-//                )
-//            )
-//
-//            sleepDao.insertSleep(
-//                SleepDto(
-//                    startTime = LocalDateTime.now(),
-//                    duration = 450,
-//                    quality = 3,
-//                    userId = 1
-//                )
-//            )
-//
-//            sleepDao.insertSleep(
-//                SleepDto(
-//                    startTime = LocalDateTime.now(),
-//                    duration = 960,
-//                    quality = 10,
-//                    userId = 2
-//                )
-//            )
-//
-//            exerciseDtoDao.insertExercise(
-//                ExerciseDto(
-//                    startTime = LocalDateTime.now(),
-//                    duration = 666,
-//                    category = ExerciseCategory.Running,
-//                    intensity = 3,
-//                    userId = 2
-//                )
-//            )
-//            exerciseDtoDao.insertExercise(
-//                ExerciseDto(
-//                    startTime = LocalDateTime.now(),
-//                    duration = 240,
-//                    category = ExerciseCategory.Football,
-//                    intensity = 3,
-//                    userId = 1
-//                )
-//            )
+            userDtoDao.insertUser(
+                UserDto(
+                    name = "John Doe",
+                    email = "johndoe@example.com",
+                    password = "LongPassword"
+                )
+            )
+
+            userDtoDao.insertUser(
+                UserDto(
+                    name = "Joe Second",
+                    email = "joe-backup@example.com",
+                    password = "Just-Password"
+                )
+            )
+
+            sleepDao.insertSleep(
+                SleepDto(
+                    startTime = LocalDateTime.now(),
+                    duration = 480,
+                    quality = 4,
+                    userId = 1
+                )
+            )
+
+            sleepDao.insertSleep(
+                SleepDto(
+                    startTime = LocalDateTime.now(),
+                    duration = 450,
+                    quality = 3,
+                    userId = 1
+                )
+            )
+
+            sleepDao.insertSleep(
+                SleepDto(
+                    startTime = LocalDateTime.now(),
+                    duration = 960,
+                    quality = 10,
+                    userId = 2
+                )
+            )
+
+            exerciseDtoDao.insertExercise(
+                ExerciseDto(
+                    startTime = LocalDateTime.now(),
+                    duration = 666,
+                    category = ExerciseCategory.Running,
+                    intensity = 3,
+                    userId = 2
+                )
+            )
+            exerciseDtoDao.insertExercise(
+                ExerciseDto(
+                    startTime = LocalDateTime.now(),
+                    duration = 240,
+                    category = ExerciseCategory.Football,
+                    intensity = 3,
+                    userId = 1
+                )
+            )
         }
     }
 }

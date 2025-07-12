@@ -1,6 +1,5 @@
 package com.openclassrooms.arista.data.repository
 
-import android.util.Log
 import com.openclassrooms.arista.data.dao.UserDtoDao
 import com.openclassrooms.arista.domain.model.User
 import kotlinx.coroutines.flow.Flow
@@ -21,8 +20,6 @@ class UserRepository(private val userDtoDao: UserDtoDao) {
     }.catch { e ->
         emit(null)
     }
-
-
 
     // Add a new user
     suspend fun addUser(user: User) {

@@ -1,6 +1,5 @@
 package com.openclassrooms.arista.ui.exercise
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.openclassrooms.arista.domain.model.Exercise
 import com.openclassrooms.arista.domain.usecase.AddNewExerciseUseCase
